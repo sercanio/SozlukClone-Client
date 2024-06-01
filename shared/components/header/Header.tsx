@@ -45,26 +45,26 @@ export async function HeaderMenu() {
         <Menu.Item key={item.label}>{item.label}</Menu.Item>
       ));
 
-      if (subMenuItems) {
-        return (
-          <Menu key={link.label} trigger="hover" transitionProps={{ exitDuration: 0 }} withinPortal>
-            <Menu.Target>
-              <Link
-                key={link.label}
-                href={link.link}
-                className={styles.link}
-                onClick={(event) => event.preventDefault()}
-              >
-                <Center>
-                  <span className={styles.linkLabel}>{link.label}</span>
-                  <IconChevronDown size="0.9rem" stroke={1.5} />
-                </Center>
-              </Link>
-            </Menu.Target>
-            <Menu.Dropdown>{subMenuItems}</Menu.Dropdown>
-          </Menu>
-        );
-      }
+      // if (subMenuItems) {
+      //   return (
+      //     <Menu key={link.label} trigger="hover" transitionProps={{ exitDuration: 0 }} withinPortal>
+      //       <Menu.Target>
+      //         <Link
+      //           key={link.label}
+      //           href={link.link}
+      //           className={styles.link}
+      //           onClick={(event) => event.preventDefault()}
+      //         >
+      //           <Center>
+      //             <span className={styles.linkLabel}>{link.label}</span>
+      //             <IconChevronDown size="0.9rem" stroke={1.5} />
+      //           </Center>
+      //         </Link>
+      //       </Menu.Target>
+      //       <Menu.Dropdown>{subMenuItems}</Menu.Dropdown>
+      //     </Menu>
+      //   );
+      // }
 
       return link.type === 'link' ? (
         <div className={styles['link-container']}>
@@ -96,9 +96,15 @@ export async function HeaderMenu() {
   return (
     <Container component="header" size="lg" className={styles.header}>
       <div className={styles.inner}>
-        <Link href="/" className={styles.link}>
+        <Button
+          key="asdasdasd"
+          component={Link}
+          href="/"
+          // onClick={link.onclick}
+          className={styles.link}
+        >
           SozlukClone
-        </Link>
+        </Button>
         <Group gap={5} visibleFrom="sm">
           {adminIems}
           {items}

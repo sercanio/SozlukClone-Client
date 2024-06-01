@@ -6,5 +6,6 @@
 
 .mantine-UnstyledButton-root:hover {
     background-color: unset;
+    color: inherit;
     /* opacity: 1; */
 }
