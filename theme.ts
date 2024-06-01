@@ -9,7 +9,14 @@ export const theme = createTheme({
     // or replace default theme color
     // blue: ['#E9EDFC', '#C1CCF6', '#99ABF0', '', '', '', '', '', '', ''],
   },
-
+  fontSizes: {
+    xs: '12px',
+    sm: '14px',
+    md: '16px',
+    lg: '18px',
+    xl: '20px',
+    xxl: '24px',
+  },
   shadows: {
     xs: '1px 1px 3px rgba(0, 0, 0, .25)',
     sm: '3px 3px 3px rgba(0, 0, 0, .25)',
@@ -17,7 +24,6 @@ export const theme = createTheme({
     lg: '7px 7px 7px rgba(0, 0, 0, .25)',
     xl: '10px 10px 10px rgba(0, 0, 0, .25)',
   },
-
   headings: {
     fontFamily: 'Roboto, sans-serif',
     sizes: {

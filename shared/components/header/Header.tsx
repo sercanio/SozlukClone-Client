@@ -1,11 +1,11 @@
 import Link from 'next/link';
-import { Menu, Group, Center, Container, Button } from '@mantine/core';
-import { IconChevronDown, IconLayoutDashboard, IconLogout, IconUser } from '@tabler/icons-react';
+import { Group, Container, Button } from '@mantine/core';
+import { IconLayoutDashboard, IconLogout, IconUser } from '@tabler/icons-react';
 import { getServerSession } from 'next-auth';
 import BurgerMenu from './BurgerMenu/BurgerMenu';
 import styles from './header.module.css';
-import './override.css';
 import { options } from '@/app/api/auth/[...nextauth]/options';
+import './override.css';
 
 export async function HeaderMenu() {
   const session = await getServerSession(options);
@@ -25,7 +25,6 @@ export async function HeaderMenu() {
       link: '/api/auth/signout',
       label: 'çıkış',
       type: 'button',
-      // onclick: () => logout(),
       icon: <IconLogout size={16} />,
     },
   ];
@@ -40,33 +39,8 @@ export async function HeaderMenu() {
   ];
 
   const menuItems = (items: any) =>
-    items.map((link: any) => {
-      const subMenuItems = link.links?.map((item: any) => (
-        <Menu.Item key={item.label}>{item.label}</Menu.Item>
-      ));
-
-      // if (subMenuItems) {
-      //   return (
-      //     <Menu key={link.label} trigger="hover" transitionProps={{ exitDuration: 0 }} withinPortal>
-      //       <Menu.Target>
-      //         <Link
-      //           key={link.label}
-      //           href={link.link}
-      //           className={styles.link}
-      //           onClick={(event) => event.preventDefault()}
-      //         >
-      //           <Center>
-      //             <span className={styles.linkLabel}>{link.label}</span>
-      //             <IconChevronDown size="0.9rem" stroke={1.5} />
-      //           </Center>
-      //         </Link>
-      //       </Menu.Target>
-      //       <Menu.Dropdown>{subMenuItems}</Menu.Dropdown>
-      //     </Menu>
-      //   );
-      // }
-
-      return link.type === 'link' ? (
+    items.map((link: any) =>
+      link.type === 'link' ? (
         <div className={styles['link-container']}>
           <Button
             key={link.label}
@@ -88,13 +62,13 @@ export async function HeaderMenu() {
         >
           {link.label}
         </Button>
-      );
-    });
+      )
+    );
 
   const items = session?.user ? menuItems(authLinks) : menuItems(links);
   const adminIems = session?.user?.groupId === 1 ? menuItems(developerLinks) : null;
   return (
-    <Container component="header" size="lg" className={styles.header}>
+    <Container component="header" size="xl" className={styles.header}>
       <div className={styles.inner}>
         <Button
           key="asdasdasd"

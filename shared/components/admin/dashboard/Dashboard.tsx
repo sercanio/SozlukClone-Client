@@ -13,6 +13,7 @@ import {
 } from '@tabler/icons-react';
 import classes from './Dashboard.module.css';
 import { Roles } from './DashboardNavigation/Roles';
+import { Users } from './DashboardNavigation/Users';
 
 interface NavbarLinkProps {
   icon: typeof IconHome2;
@@ -32,13 +33,12 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
 }
 
 const mockdata = [
-  { icon: IconHome2, label: 'Home' },
-  { icon: IconGauge, label: 'Roles' },
-  { icon: IconDeviceDesktopAnalytics, label: 'Analytics' },
-  { icon: IconCalendarStats, label: 'Releases' },
-  { icon: IconUser, label: 'Account' },
-  { icon: IconFingerprint, label: 'Security' },
-  { icon: IconSettings, label: 'Settings' },
+  { icon: IconHome2, label: 'Anasayfa' },
+  { icon: IconUser, label: 'Kullanıcılar' },
+  { icon: IconGauge, label: 'Roller' },
+  { icon: IconDeviceDesktopAnalytics, label: 'Analizler' },
+  { icon: IconFingerprint, label: 'Güvenlik' },
+  { icon: IconSettings, label: 'Site Ayarları' },
 ];
 
 export function Dashboard() {
@@ -68,7 +68,8 @@ export function Dashboard() {
           <p>Welcome to the dashboard</p>
         </Container>
       )}
-      {active === 1 && <Roles />}
+      {active === 1 && <Users />}
+      {active === 2 && <Roles />}
     </Flex>
   );
 }

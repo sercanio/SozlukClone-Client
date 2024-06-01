@@ -7,7 +7,7 @@ export default async function HomePage() {
   const data = await response.json();
   const titles = [...(await data.items)];
   return (
-    <Container size="lg" px="lg">
+    <Container size="xl" px="lg">
       <ul>
         {titles.map((title) => (
           <li key={title.slug}>
