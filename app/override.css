@@ -1,3 +1,8 @@
+ul {
+    list-style-type: none;
+    padding: .5rem;
+}
+
 .mantine-UnstyledButton-root {
     background-color: unset;
     border: none;
@@ -9,7 +14,9 @@
     opacity: 1;
 }
 
-ul {
-    list-style-type: none;
-    padding: .5rem;
+.mantine-Notification-root{
+    /* position: fixed !important;
+    bottom : 1rem;
+    right: 1rem;
+    z-index: 999; */
 }

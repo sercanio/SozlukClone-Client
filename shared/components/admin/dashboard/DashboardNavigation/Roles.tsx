@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import {
-  Autocomplete,
   Checkbox,
   Container,
   Flex,
@@ -11,9 +10,14 @@ import {
   ScrollArea,
   LoadingOverlay,
   Box,
+  Notification,
+  Select,
+  Transition,
+  Stack,
 } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import { useDisclosure } from '@mantine/hooks';
+import useNotificationStore from '@/store/notificationStore';
 import './override.css';
 
 export function Roles() {
@@ -26,6 +30,7 @@ export function Roles() {
   const [error, setError] = useState<null | { message: string }>(null);
   const [visible, { open, close }] = useDisclosure(false);
 
+  const { notifications, showNotification, hideNotification } = useNotificationStore();
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -51,11 +56,11 @@ export function Roles() {
     })
       .then((response) => response.json())
       .then((data) => {
-        const authorGroups = data.items.map(
+        const authorGrps = data.items.map(
           (item: { id: number; name: string }) =>
             ({ id: item.id, name: item.name }) as { id: number; name: string }
         );
-        setAuthorGroups(authorGroups);
+        setAuthorGroups(authorGrps);
         close();
       })
       .catch((err) => {
@@ -131,7 +136,7 @@ export function Roles() {
 
     if (checked) {
       open();
-      fetch(`http://localhost:60805/api/AuthorGroupUserOperationClaims`, {
+      fetch('http://localhost:60805/api/AuthorGroupUserOperationClaims', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -147,6 +152,7 @@ export function Roles() {
         .then((data) => {
           setAuthorGroupClaims((prev) => [...prev, data]);
           close();
+          showNotification('Başarılı', 'Kullanıcı gurubu izni başarılı bir şekilde eklendi.');
         })
         .catch((err) => {
           setError(err);
@@ -165,6 +171,7 @@ export function Roles() {
         .then(() => {
           setAuthorGroupClaims((prev) => prev.filter((agc) => agc.id !== claim?.id));
           close();
+          showNotification('Başarılı', 'Kullanıcı gurubu izni başarılı bir şekilde silindi.');
         })
         .catch((err) => {
           setError(err);
@@ -180,13 +187,17 @@ export function Roles() {
 
   return (
     <Container py="none" px="sm">
-      <h1>Roller</h1>
+      <h1>Kullanıcı Rol ve İzinleri</h1>
       <Flex direction="column" gap="lg">
-        <Autocomplete
+        <Select
           label="Kullanıcı Rolleri"
-          placeholder="Pick value or enter anything"
+          description="Buradan izinlerini değiştirmek istediğiniz kullanıcı rolünü seçebilirsiniz."
+          placeholder="Bir kullanıcı rolü seçin"
           onChange={(value) => setGroup(getGroupIdFromArray(`${value}`) || null)}
           data={authorGroups.map((authorGroup) => authorGroup.name)}
+          defaultValue={authorGroups[0]?.name}
+          allowDeselect
+          mt="md"
         />
         <Box pos="relative">
           <LoadingOverlay
@@ -219,6 +230,30 @@ export function Roles() {
         </Box>
       </Flex>
       {error && <p>{error.message}</p>}
+      <Box
+        style={{
+          position: 'fixed',
+          top: '10px',
+          right: '10px',
+          zIndex: 2000,
+        }}
+      >
+        <Stack spacing="sm">
+          {notifications.map((notification) => (
+            <Transition key={notification.id} mounted={true} transition="fade" duration={300}>
+              {(styles) => (
+                <Notification
+                  style={styles}
+                  title={notification.title}
+                  onClose={() => hideNotification(notification.id)}
+                >
+                  {notification.message}
+                </Notification>
+              )}
+            </Transition>
+          ))}
+        </Stack>
+      </Box>
     </Container>
   );
 }
