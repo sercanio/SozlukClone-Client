@@ -63,8 +63,7 @@ export function Dashboard() {
       </nav>
       {active === 0 && (
         <Container fluid py="none" px="sm">
-          <h1>Dashboard</h1>
-          <p>Welcome to the dashboard</p>
+          <h1>Yönetim Paneli</h1>
         </Container>
       )}
       {active === 1 && <Users />}
