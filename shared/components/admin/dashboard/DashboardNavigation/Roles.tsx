@@ -160,7 +160,7 @@ export function Roles() {
         });
     } else {
       open();
-      fetch(`http://localhost:60805/api/AuthorGroupUserOperationClaims/${claim?.id}`, {
+      fetch(`http://localhost:60805/api/AutorGroupUserOperationClaims/${claim?.id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -175,6 +175,7 @@ export function Roles() {
         })
         .catch((err) => {
           setError(err);
+          showNotification('Başarısız', 'Kullanıcı gurubu izni başarılı bir şekilde değiştirilemedi.');
           close();
         });
     }

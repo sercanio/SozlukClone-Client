@@ -7,13 +7,12 @@ import {
   IconGauge,
   IconDeviceDesktopAnalytics,
   IconFingerprint,
-  IconCalendarStats,
   IconUser,
   IconSettings,
 } from '@tabler/icons-react';
 import classes from './Dashboard.module.css';
 import { Roles } from './DashboardNavigation/Roles';
-import { Users } from './DashboardNavigation/Users';
+import { Users } from './DashboardNavigation/Users/Users';
 
 interface NavbarLinkProps {
   icon: typeof IconHome2;
