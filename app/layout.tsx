@@ -1,9 +1,11 @@
 import '@mantine/core/styles.css';
 import React from 'react';
 import { ColorSchemeScript } from '@mantine/core';
-import { Providers } from './Provider';
+import { Providers } from './provider';
 import { HeaderMenu } from '@/shared/components/header/Header';
 import './override.css';
+import Toaster from '@/core/components/Toaster/Toaster';
+import LoadingSpinner from '@/core/components/LoadingOverlay/LoadingSpinner';
 
 export const metadata = {
   title: 'Mantine Next.js template',
@@ -21,10 +23,12 @@ export default async function RootLayout({ children }: { children: any }) {
         />
       </head>
       <body>
-      <ColorSchemeScript defaultColorScheme="auto" />
+        <ColorSchemeScript defaultColorScheme="auto" />
         <Providers>
           <HeaderMenu />
           {children}
+          <Toaster />
+          <LoadingSpinner />
         </Providers>
       </body>
     </html>

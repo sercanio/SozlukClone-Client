@@ -7,25 +7,22 @@ import {
   Paper,
   LoadingOverlay,
   Box,
-  Notification,
   Select,
-  Transition,
-  Stack,
   Autocomplete,
   AutocompleteProps,
   Group,
   Avatar,
   Text,
-  Grid,
   Table,
 } from '@mantine/core';
 import { useSession } from 'next-auth/react';
-import { useDisclosure } from '@mantine/hooks';
 import useNotificationStore from '@/store/notificationStore';
+import useLoadingStore from '@/store/loadingStore';
 import formatDate from '@/utils/FormatDate';
+import AuthorGroupsService from '@/shared/services/authorGroupsService/authorGroupsService';
+import AuthorsService from '@/shared/services/authorsService/authorsService';
 import styles from './Users.module.css';
-import '../override.css';
-import updateAuthorById from '@/shared/services/author/authorService';
+import './override.css';
 
 export function Users() {
   const [authorGroups, setAuthorGroups] = useState<{ id: number; name: string }[]>([]);
@@ -34,12 +31,15 @@ export function Users() {
     Record<string, { id: number; image: string; email: string }>
   >({});
   const [error, setError] = useState<null | { message: string }>(null);
-  const [visible, { open, close }] = useDisclosure(false);
   const [autocompleteError, setAutocompleteError] = useState<string | null>(null);
   const [authorDetails, setAuthorDetails] = useState<any>(null);
-
   const { showNotification } = useNotificationStore();
+  const { showSpinnerOverlay, hideSpinnerOverlay } = useLoadingStore();
+
   const { data: session } = useSession();
+
+  const authorService = new AuthorsService(session!);
+  const authorGroupService = new AuthorGroupsService(session!);
 
   useEffect(() => {
     getAuthorGroups(0, 10);
@@ -51,57 +51,24 @@ export function Users() {
     }
   }, [group]);
 
-  function getAuthorGroups(pageIndex: number, pageSize: number) {
-    open();
-    fetch(`http://localhost:60805/api/AuthorGroups?PageIndex=${pageIndex}&PageSize=${pageSize}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${session?.user.accessToken}`,
-      },
-      credentials: 'include',
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const authorGrps = data.items.map(
-          (item: { id: number; name: string }) =>
-            ({ id: item.id, name: item.name }) as { id: number; name: string }
-        );
-        setAuthorGroups(authorGrps);
-        close();
-      })
-      .catch((err) => {
-        setError(err);
-        close();
-      });
+  async function getAuthorGroups(pageIndex: number, pageSize: number) {
+    showSpinnerOverlay();
+    try {
+      const data = await authorGroupService.getAll(pageIndex, pageSize);
+      setAuthorGroups(data.items);
+    } catch (err) {
+      setError(err);
+    } finally {
+      hideSpinnerOverlay();
+    }
   }
 
-  function searchAuthorByUserName(userName: string) {
+  function searchAuthorByUserName(userName: string, pageIndex: number, pageSize: number) {
     if (userName.length > 1) {
       setAutocompleteError(null);
-      open();
-      fetch('http://localhost:60805/api/Authors/Dynamic?PageIndex=0&PageSize=10', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.user.accessToken}`,
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          sort: [
-            {
-              field: 'userName',
-              dir: 'asc',
-            },
-          ],
-          filter: {
-            field: 'userName',
-            operator: 'contains',
-            value: userName,
-          },
-        }),
-      })
-        .then((response) => response.json())
+      showSpinnerOverlay();
+      authorService
+        .searchByUserName(userName, pageIndex, pageSize)
         .then((data) => {
           const searchResults = data.items.reduce(
             (
@@ -117,12 +84,12 @@ export function Users() {
             {}
           );
           setUsersData(searchResults);
-          close();
+          hideSpinnerOverlay();
         })
         .catch((err) => {
           setError(err);
           showNotification('Başarısız oldu', 'error');
-          close();
+          hideSpinnerOverlay();
         });
     } else if (userName.length === 0) {
       setUsersData({});
@@ -131,23 +98,18 @@ export function Users() {
   }
 
   function fetchAuthorDetails(authorId: number) {
-    open();
-    fetch(`http://localhost:60805/api/Authors/${authorId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${session?.user.accessToken}`,
-      },
-      credentials: 'include',
-    })
-      .then((response) => response.json())
+    showSpinnerOverlay();
+    authorService
+      .getById(authorId)
       .then((data) => {
         setAuthorDetails(data);
-        close();
+        showNotification('Başarılı', 'Kullanıcı bilgileri getirildi.');
+        hideSpinnerOverlay();
       })
       .catch((err) => {
         setError(err);
-        close();
+        showNotification('Başarısız', 'Kullanıcı bilgileri getirilemedi.');
+        hideSpinnerOverlay();
       });
   }
 
@@ -170,23 +132,25 @@ export function Users() {
   }
 
   function handleAuthorGroupChange(value: string) {
-    updateAuthorById(
-      {
+    showSpinnerOverlay();
+    authorService
+      .update({
         id: authorDetails.id,
         userId: authorDetails.userId,
         userName: authorDetails.userName,
         authorGroupId: getGroupIdFromArray(value),
         activeBadgeId: authorDetails.activeBadgeId,
-      },
-      session
-    )
+      })
       .then(() => {
         showNotification('Başarılı', 'Kullanıcı rolü başarılı bir şekilde değiştirildi.');
         setGroup(getGroupIdFromArray(`${value}`) || null);
       })
       .catch((err) => {
-        setError(err);
         showNotification('Başarısız', 'Kullanıcı rolü değiştirilemedi.');
+        setError(err);
+      })
+      .finally(() => {
+        hideSpinnerOverlay();
       });
   }
 
@@ -206,22 +170,13 @@ export function Users() {
     <Container py="none" px="sm" w="100%">
       <h1>Kullanıcılar</h1>
       <Paper withBorder p="xs">
-        <LoadingOverlay
-          visible={visible}
-          zIndex={1000}
-          overlayProps={{ radius: 'none', blur: 0 }}
-          transitionProps={{
-            duration: 25,
-            timingFunction: 'ease-in-out',
-          }}
-        />
         <Autocomplete
           data={Object.keys(usersData)}
           renderOption={renderAutocompleteOption}
           maxDropdownHeight={400}
           label="Yazar ara"
           placeholder="Kullanıcı adı girin"
-          onChange={(value) => searchAuthorByUserName(value)}
+          onChange={(value) => searchAuthorByUserName(value, 0, 10)}
           onOptionSubmit={(item) => handleAutocompleteSelect(item)}
           error={autocompleteError}
         />
@@ -229,12 +184,9 @@ export function Users() {
       {authorDetails && (
         <Flex justify="space-around" direction={{ base: 'column', md: 'row' }}>
           <Paper mt="lg">
-            {/* <h2>Yazar Bilgileri</h2> */}
             <Text size="xl" fw="bold" c="cyan" mb="xl" ml="xl">
               {authorDetails.userName}
             </Text>
-            {/* <Text size="md">Kayıt: {formatDate(authorDetails.createdDate)}</Text>
-            <Text size="md">E-posta: {authorDetails?.user?.email}</Text> */}
             <Table
               highlightOnHover
               horizontalSpacing="xl"
@@ -283,7 +235,9 @@ export function Users() {
           </Box>
         </Flex>
       )}
-      {error && <p>{error.message}</p>}
+      <Text size="md" mt="lg" c="red">
+        {error && <p>{error.message}</p>}
+      </Text>
     </Container>
   );
 }

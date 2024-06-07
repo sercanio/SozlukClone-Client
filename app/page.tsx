@@ -1,9 +1,9 @@
 import { Container } from '@mantine/core';
 import Link from 'next/link';
-import TitleService from '@/shared/services/title/TitleService';
+import TitlesService from '@/shared/services/titlesService/titlesService';
 
 export default async function HomePage() {
-  const response = await TitleService.getAll();
+  const response = await TitlesService.getAll();
   const data = await response.json();
   const titles = [...(await data.items)];
   return (

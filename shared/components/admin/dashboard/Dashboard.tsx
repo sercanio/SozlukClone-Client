@@ -2,17 +2,10 @@
 
 import { useState } from 'react';
 import { Tooltip, UnstyledButton, Stack, rem, Container, Flex } from '@mantine/core';
-import {
-  IconHome2,
-  IconGauge,
-  IconDeviceDesktopAnalytics,
-  IconFingerprint,
-  IconUser,
-  IconSettings,
-} from '@tabler/icons-react';
-import classes from './Dashboard.module.css';
+import { IconHome2, IconGauge, IconUser, IconSettings } from '@tabler/icons-react';
 import { Roles } from './DashboardNavigation/Roles';
-import { Users } from './DashboardNavigation/Users/Users';
+import { Users } from './DashboardNavigation/Users';
+import classes from './Dashboard.module.css';
 
 interface NavbarLinkProps {
   icon: typeof IconHome2;
@@ -21,7 +14,7 @@ interface NavbarLinkProps {
   onClick?: () => void;
 }
 
-function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps): JSX.Element {
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
       <UnstyledButton onClick={onClick} className={classes.link} data-active={active || undefined}>
@@ -35,8 +28,6 @@ const mockdata = [
   { icon: IconHome2, label: 'Anasayfa' },
   { icon: IconUser, label: 'Kullanıcılar' },
   { icon: IconGauge, label: 'Roller' },
-  { icon: IconDeviceDesktopAnalytics, label: 'Analizler' },
-  { icon: IconFingerprint, label: 'Güvenlik' },
   { icon: IconSettings, label: 'Site Ayarları' },
 ];
 
