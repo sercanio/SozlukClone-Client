@@ -1,69 +1,63 @@
-/* eslint-disable consistent-return */
-/* eslint-disable @typescript-eslint/return-await */
-import axios, { AxiosInstance } from 'axios';
+// shared/services/BackendService.ts
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { Session } from 'next-auth';
-import ApiError from '../apiError/ApiError';
+import { ApiError } from '../apiError/ApiError';
+
+export type RequestHeaders = Record<string, string>;
 
 export default class BackendService {
   private axiosInstance: AxiosInstance;
 
-  constructor(session: Session) {
-    this.axiosInstance = axios.create({
+  constructor(session: Session | null) {
+    const baseConfig: AxiosRequestConfig = {
       baseURL: process.env.NEXT_PUBLIC_API_URL,
       timeout: Number(process.env.NEXT_PUBLIC_AXIOS_TIMEOUT) || 10000,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${session.user.accessToken}`,
       },
       withCredentials: true,
-    });
+    };
+
+    if (session?.user?.accessToken && baseConfig.headers) {
+      baseConfig.headers.Authorization = `Bearer ${session.user.accessToken}`;
+    }
+
+    this.axiosInstance = axios.create(baseConfig);
   }
 
-  public async get(url: string, headers?: any): Promise<any> {
+  public async get<T>(url: string, headers?: RequestHeaders): Promise<T> {
+    return this.request<T>({ method: 'GET', url, headers });
+  }
+
+  public async post<T, U>(url: string, data: U, headers?: RequestHeaders): Promise<T> {
+    return this.request<T>({ method: 'POST', url, data, headers });
+  }
+
+  public async put<T, U>(url: string, data: U, headers?: RequestHeaders): Promise<T> {
+    return this.request<T>({ method: 'PUT', url, data, headers });
+  }
+
+  public async delete<T>(url: string, headers?: RequestHeaders): Promise<T> {
+    return this.request<T>({ method: 'DELETE', url, headers });
+  }
+
+  private async request<T>(config: AxiosRequestConfig): Promise<T> {
     try {
-      const response = await this.axiosInstance.get(url, { headers });
+      const response = await this.axiosInstance.request<T>(config);
       return response.data;
-    } catch (error) {
-      this.handleError(error);
+    } catch (error: any) {
+      throw this.handleError(error);
     }
   }
 
-  public async post(url: string, data: any, headers?: any): Promise<any> {
-    try {
-      const response = await this.axiosInstance.post(url, data, { headers });
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
-
-  public async put(url: string, data: any, headers?: any): Promise<any> {
-    try {
-      const response = await this.axiosInstance.put(url, data, { headers });
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
-
-  public async delete(url: string, headers?: any): Promise<any> {
-    try {
-      const response = await this.axiosInstance.delete(url, { headers });
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
-
-  private handleError(error: any): void {
+  private handleError(error: any): ApiError {
     if (axios.isAxiosError(error)) {
       const errorMessage = error.response?.data?.message || error.message;
       const status = error.response?.status || 500;
       const statusText = error.response?.statusText || 'Internal Server Error';
 
-      throw new ApiError(errorMessage, status, statusText);
-    } else {
-      throw new Error(error.message);
+      return new ApiError(errorMessage, status, statusText);
     }
+    return new ApiError(error.message, 500, 'Internal Server Error');
   }
 }

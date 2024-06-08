@@ -1,10 +1,25 @@
 'use client';
 
 import { Box, Notification, Stack, Transition } from '@mantine/core';
-import useNotificationStore from '@/store/notificationStore';
+import useNotificationStore, { Variant } from '@/store/notificationStore';
 
 export default function Toaster(): JSX.Element {
   const { notifications, hideNotification } = useNotificationStore();
+
+  function decideNotificationColor(variant: Variant) {
+    switch (variant) {
+      case 'info':
+        return 'blue';
+      case 'success':
+        return 'green';
+      case 'error':
+        return 'red';
+      case 'warning':
+        return 'yellow';
+      default:
+        return 'blue';
+    }
+  }
 
   return (
     <Box
@@ -20,6 +35,7 @@ export default function Toaster(): JSX.Element {
           <Transition key={notification.title} mounted transition="fade" duration={300}>
             {(styles) => (
               <Notification
+                color={decideNotificationColor(notification.variant)}
                 key={notification.title}
                 style={styles}
                 title={notification.title}

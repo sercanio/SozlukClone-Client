@@ -16,9 +16,9 @@ import { useSession } from 'next-auth/react';
 import AuthorGroupsService from '@/shared/services/authorGroupsService/authorGroupsService';
 import useNotificationStore from '@/store/notificationStore';
 import useLoadingStore from '@/store/loadingStore';
-import './override.css';
-import AuthorGroupOperationClaimsService from '@/shared/services/authorGroupOperationClaimsService/AuthorGroupOperationClaimsService';
+import AuthorGroupOperationClaimsService from '@/shared/services/authorGroupOperationClaimsService/authorGroupOperationClaimsService';
 import OperationClaimsService from '@/shared/services/operationClaimsService/operationClaimsService';
+import './override.css';
 
 export function Roles() {
   const [authorGroups, setAuthorGroups] = useState<{ id: number; name: string }[]>([]);
@@ -27,9 +27,10 @@ export function Roles() {
   const [authorGroupClaims, setAuthorGroupClaims] = useState<
     { id: number; operationClaimId: number; authorGroupId: number }[]
   >([]);
-  const [error, setError] = useState<null | { message: string }>(null);
-  const { showSpinnerOverlay, hideSpinnerOverlay } = useLoadingStore();
-  const { showNotification } = useNotificationStore();
+
+  const showSpinnerOverlay = useLoadingStore((state) => state.showSpinnerOverlay);
+  const hideSpinnerOverlay = useLoadingStore((state) => state.hideSpinnerOverlay);
+  const showNotification = useNotificationStore((state) => state.showNotification);
   const { data: session } = useSession();
 
   async function getAuthorGroups(pageIndex: number, pageSize: number) {
@@ -38,8 +39,8 @@ export function Roles() {
     try {
       const data = await authorGroupService.getAll(pageIndex, pageSize);
       setAuthorGroups(data.items);
-    } catch (err) {
-      setError(err);
+    } catch (err: any) {
+      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
     } finally {
       hideSpinnerOverlay();
     }
@@ -55,8 +56,8 @@ export function Roles() {
         name: item.name,
       }));
       setClaims(clms);
-    } catch (err) {
-      setError(err);
+    } catch (err: any) {
+      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
     } finally {
       hideSpinnerOverlay();
     }
@@ -75,67 +76,61 @@ export function Roles() {
         })
       );
       setAuthorGroupClaims(clms);
-    } catch (err) {
-      setError(err);
+    } catch (err: any) {
+      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
     } finally {
       hideSpinnerOverlay();
     }
   }
 
-  function handleCheckboxChange(claimId: number, checked: boolean) {
+  async function addClaim(claimId: number) {
+    const authorGroupOperationClaimsService = new AuthorGroupOperationClaimsService(session!);
+    showSpinnerOverlay();
+    try {
+      const data = await authorGroupOperationClaimsService.addClaim(claimId, group!);
+      setAuthorGroupClaims((prev) => [...prev, data]);
+      showNotification({
+        title: 'Başarılı',
+        message: 'Kullanıcı gurubu izni başarılı bir şekilde eklendi.',
+        variant: 'success',
+      });
+    } catch (err: any) {
+      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
+    } finally {
+      hideSpinnerOverlay();
+    }
+  }
+
+  async function removeClaim(claimId: number) {
+    const authorGroupOperationClaimsService = new AuthorGroupOperationClaimsService(session!);
     const claim = authorGroupClaims.find(
       (agc) => agc.operationClaimId === claimId && agc.authorGroupId === group
     );
+    if (!claim) return;
 
-    if (checked) {
-      showSpinnerOverlay();
-      fetch('http://localhost:60805/api/AuthorGroupUserOperationClaims', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.user.accessToken}`,
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          operationClaimId: claimId,
-          authorGroupId: group,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setAuthorGroupClaims((prev) => [...prev, data]);
-          hideSpinnerOverlay();
-          showNotification('Başarılı', 'Kullanıcı gurubu izni başarılı bir şekilde eklendi.');
-        })
-        .catch((err) => {
-          setError(err);
-          hideSpinnerOverlay();
-        });
-    } else {
-      showSpinnerOverlay();
-      fetch(`http://localhost:60805/api/AuthorGroupUserOperationClaims/${claim?.id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.user.accessToken}`,
-        },
-        credentials: 'include',
-      })
-        .then(() => {
-          setAuthorGroupClaims((prev) => prev.filter((agc) => agc.id !== claim?.id));
-          hideSpinnerOverlay();
-          showNotification('Başarılı', 'Kullanıcı gurubu izni başarılı bir şekilde silindi.');
-        })
-        .catch((err) => {
-          setError(err);
-          showNotification(
-            'Başarısız',
-            'Kullanıcı gurubu izni başarılı bir şekilde değiştirilemedi.'
-          );
-          hideSpinnerOverlay();
-        });
+    showSpinnerOverlay();
+    try {
+      await authorGroupOperationClaimsService.removeClaim(claim.id);
+      setAuthorGroupClaims((prev) => prev.filter((agc) => agc.id !== claim.id));
+      showNotification({
+        title: 'Başarılı',
+        message: 'Kullanıcı gurubu izni başarılı bir şekilde silindi.',
+        variant: 'success',
+      });
+    } catch (err: any) {
+      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
+    } finally {
+      hideSpinnerOverlay();
     }
   }
+
+  const handleCheckboxChange = (claimId: number, checked: boolean) => {
+    if (checked) {
+      addClaim(claimId);
+    } else {
+      removeClaim(claimId);
+    }
+  };
 
   const getGroupIdFromArray = (name: string) => {
     const authorGroupId = authorGroups.find((grp) => grp.name === name)?.id;
@@ -155,7 +150,9 @@ export function Roles() {
 
   return (
     <Container py="none" px="sm">
-      <h1>Kullanıcı Rol ve İzinleri</h1>
+      <Text component="h1" size="xl" fw={700}>
+        Kullanıcı Rol ve İzinleri
+      </Text>
       <Flex direction="column" gap="lg">
         <Select
           label="Kullanıcı Rolleri"
@@ -192,9 +189,6 @@ export function Roles() {
           </Paper>
         </Box>
       </Flex>
-      <Text size="md" mt="lg" c="red">
-        {error && <p>{error.message}</p>}
-      </Text>
     </Container>
   );
 }

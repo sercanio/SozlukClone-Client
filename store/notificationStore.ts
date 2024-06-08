@@ -1,24 +1,42 @@
 import { create } from 'zustand';
 
-interface Notification {
+export type Variant = 'info' | 'success' | 'error' | 'warning';
+
+type TNotification = {
   id: number;
   title: string;
   message: string;
+  variant: Variant;
+};
+
+export type TNotificationProps = {
+  title: string;
+  message: string;
+  variant: Variant;
+};
+
+interface TNotificationState {
+  notifications: TNotification[];
+  notificationId: number;
+  showNotification: ({ title, message, variant }: TNotificationProps) => void;
+  hideNotification: (id: number) => void;
 }
 
-const useNotificationStore = create((set) => ({
-  notifications: [] as Notification[],
+const useNotificationStore = create<TNotificationState>((set) => ({
+  notifications: [] as TNotification[],
   notificationId: 0,
 
-  showNotification: (title: string, message: string) =>
+  showNotification: ({ title, message, variant }: TNotificationProps) =>
     set((state) => {
       const newId = state.notificationId + 1;
-      const notifications = [...state.notifications, { id: newId, title, message }];
+      const notifications = [...state.notifications, { id: newId, title, message, variant }];
       setTimeout(() => {
-        set((state) => ({
-          notifications: state.notifications.filter((notification) => notification.id !== newId),
+        set((stateOnTimeOut) => ({
+          notifications: stateOnTimeOut.notifications.filter(
+            (notification) => notification.id !== newId
+          ),
         }));
-      }, 3000); // Adjust the autoClose time as needed
+      }, 3000);
       return {
         notifications,
         notificationId: newId,

@@ -1,4 +1,10 @@
-export default class ApiError extends Error {
+export type TApiError = {
+  status: number;
+  statusText: string;
+  message: string;
+};
+
+export class ApiError extends Error {
   status: number;
   statusText: string;
 

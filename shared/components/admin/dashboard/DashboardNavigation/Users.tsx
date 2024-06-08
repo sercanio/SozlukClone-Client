@@ -5,7 +5,6 @@ import {
   Container,
   Flex,
   Paper,
-  LoadingOverlay,
   Box,
   Select,
   Autocomplete,
@@ -21,7 +20,6 @@ import useLoadingStore from '@/store/loadingStore';
 import formatDate from '@/utils/FormatDate';
 import AuthorGroupsService from '@/shared/services/authorGroupsService/authorGroupsService';
 import AuthorsService from '@/shared/services/authorsService/authorsService';
-import styles from './Users.module.css';
 import './override.css';
 
 export function Users() {
@@ -30,10 +28,9 @@ export function Users() {
   const [usersData, setUsersData] = useState<
     Record<string, { id: number; image: string; email: string }>
   >({});
-  const [error, setError] = useState<null | { message: string }>(null);
   const [autocompleteError, setAutocompleteError] = useState<string | null>(null);
   const [authorDetails, setAuthorDetails] = useState<any>(null);
-  const { showNotification } = useNotificationStore();
+  const showNotification = useNotificationStore((state) => state.showNotification);
   const { showSpinnerOverlay, hideSpinnerOverlay } = useLoadingStore();
 
   const { data: session } = useSession();
@@ -56,8 +53,8 @@ export function Users() {
     try {
       const data = await authorGroupService.getAll(pageIndex, pageSize);
       setAuthorGroups(data.items);
-    } catch (err) {
-      setError(err);
+    } catch (err: any) {
+      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
     } finally {
       hideSpinnerOverlay();
     }
@@ -87,8 +84,7 @@ export function Users() {
           hideSpinnerOverlay();
         })
         .catch((err) => {
-          setError(err);
-          showNotification('Başarısız oldu', 'error');
+          showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
           hideSpinnerOverlay();
         });
     } else if (userName.length === 0) {
@@ -103,12 +99,10 @@ export function Users() {
       .getById(authorId)
       .then((data) => {
         setAuthorDetails(data);
-        showNotification('Başarılı', 'Kullanıcı bilgileri getirildi.');
         hideSpinnerOverlay();
       })
       .catch((err) => {
-        setError(err);
-        showNotification('Başarısız', 'Kullanıcı bilgileri getirilemedi.');
+        showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
         hideSpinnerOverlay();
       });
   }
@@ -142,12 +136,15 @@ export function Users() {
         activeBadgeId: authorDetails.activeBadgeId,
       })
       .then(() => {
-        showNotification('Başarılı', 'Kullanıcı rolü başarılı bir şekilde değiştirildi.');
+        showNotification({
+          title: 'Başarılı',
+          message: 'Kullanıcı rolü başarılı bir şekilde değiştirildi.',
+          variant: 'success',
+        });
         setGroup(getGroupIdFromArray(`${value}`) || null);
       })
       .catch((err) => {
-        showNotification('Başarısız', 'Kullanıcı rolü değiştirilemedi.');
-        setError(err);
+        showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
       })
       .finally(() => {
         hideSpinnerOverlay();
@@ -168,7 +165,9 @@ export function Users() {
 
   return (
     <Container py="none" px="sm" w="100%">
-      <h1>Kullanıcılar</h1>
+      <Text component="h1" size="xl" fw={700}>
+        Kullanıcılar
+      </Text>
       <Paper withBorder p="xs">
         <Autocomplete
           data={Object.keys(usersData)}
@@ -235,9 +234,6 @@ export function Users() {
           </Box>
         </Flex>
       )}
-      <Text size="md" mt="lg" c="red">
-        {error && <p>{error.message}</p>}
-      </Text>
     </Container>
   );
 }
