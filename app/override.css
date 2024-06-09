@@ -4,12 +4,9 @@ ul {
 }
 
 .mantine-UnstyledButton-root {
-    background-color: unset;
-    border: none;
     opacity: .8;
 }
 
 .mantine-UnstyledButton-root:hover {
-    background-color: unset;
     opacity: 1;
 }

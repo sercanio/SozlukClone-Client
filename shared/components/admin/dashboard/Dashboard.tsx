@@ -5,7 +5,8 @@ import { Tooltip, UnstyledButton, Stack, rem, Container, Flex } from '@mantine/c
 import { IconHome2, IconGauge, IconUser, IconSettings } from '@tabler/icons-react';
 import { Roles } from './DashboardNavigation/Roles';
 import { Users } from './DashboardNavigation/Users';
-import classes from './Dashboard.module.css';
+import { Settings } from './DashboardNavigation/Settings';
+import styles from './Dashboard.module.css';
 
 interface NavbarLinkProps {
   icon: typeof IconHome2;
@@ -17,7 +18,7 @@ interface NavbarLinkProps {
 function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps): JSX.Element {
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
-      <UnstyledButton onClick={onClick} className={classes.link} data-active={active || undefined}>
+      <UnstyledButton onClick={onClick} className={styles.link} data-active={active || undefined}>
         <Icon style={{ width: rem(20), height: rem(20) }} stroke={1.5} />
       </UnstyledButton>
     </Tooltip>
@@ -45,8 +46,8 @@ export function Dashboard() {
 
   return (
     <Flex mt="lg" mx="none">
-      <nav className={classes.navbar}>
-        <div className={classes.navbarMain}>
+      <nav className={styles.navbar}>
+        <div className={styles.navbarMain}>
           <Stack justify="center" gap="xs">
             {links}
           </Stack>
@@ -59,6 +60,7 @@ export function Dashboard() {
       )}
       {active === 1 && <Users />}
       {active === 2 && <Roles />}
+      {active === 3 && <Settings />}
     </Flex>
   );
 }

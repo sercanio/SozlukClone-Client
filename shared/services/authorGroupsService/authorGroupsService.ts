@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/return-await */
 import { Session } from 'next-auth';
 import BackendService from '@/core/services/backendService/backendService';
-import { GetByIdResponse } from '@/types/DTOs/AuthorGroupOperationClaimsDTOs';
-import { AuthorGroupsGetAllResponse } from '@/types/DTOs/AuthorsDTOs';
+import {
+  AuthorGroupGetByIdResponse,
+  AuthorGroupsGetAllResponse,
+  UpdateAuhorGroupRequest,
+} from '@/types/DTOs/AuthorGroupsDTOs';
 
 export default class AuthorGroupsService {
   private backendService: BackendService;
@@ -16,7 +20,14 @@ export default class AuthorGroupsService {
     );
   }
 
-  public async getById(id: number): Promise<GetByIdResponse> {
-    return this.backendService.get<GetByIdResponse>(`AuthorGroups/${id}`);
+  public async getById(id: number): Promise<AuthorGroupGetByIdResponse> {
+    return this.backendService.get<AuthorGroupGetByIdResponse>(`AuthorGroups/${id}`);
+  }
+
+  public async update(
+    id: number,
+    data: UpdateAuhorGroupRequest
+  ): Promise<AuthorGroupGetByIdResponse> {
+    return await this.backendService.put('AuthorGroups', data);
   }
 }

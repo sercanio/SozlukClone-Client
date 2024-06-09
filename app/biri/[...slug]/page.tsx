@@ -13,6 +13,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
   if (data.ok && data.status === 200) {
     author = await data.json();
   }
+
   return (
     <Container size="lg" px="lg" component="main">
       <Paper shadow="xs" p="xs" withBorder>

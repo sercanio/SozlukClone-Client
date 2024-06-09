@@ -1,11 +1,9 @@
-.mantine-UnstyledButton-root {
+header .mantine-UnstyledButton-root {
     background-color: unset;
     border: none;
-    /* opacity: .8; */
 }
 
-.mantine-UnstyledButton-root:hover {
+header .mantine-UnstyledButton-root:hover {
     background-color: unset;
     color: inherit;
-    /* opacity: 1; */
 }

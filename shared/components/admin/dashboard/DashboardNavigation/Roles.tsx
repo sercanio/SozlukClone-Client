@@ -11,6 +11,7 @@ import {
   Box,
   Select,
   Text,
+  ColorPicker,
 } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import AuthorGroupsService from '@/shared/services/authorGroupsService/authorGroupsService';
@@ -19,11 +20,13 @@ import useLoadingStore from '@/store/loadingStore';
 import AuthorGroupOperationClaimsService from '@/shared/services/authorGroupOperationClaimsService/authorGroupOperationClaimsService';
 import OperationClaimsService from '@/shared/services/operationClaimsService/operationClaimsService';
 import './override.css';
+import { AuthorGroup } from '@/types/DTOs/AuthorGroupsDTOs';
+import { OperationClaim } from '@/types/DTOs/OperationClaimsDTOs';
 
 export function Roles() {
-  const [authorGroups, setAuthorGroups] = useState<{ id: number; name: string }[]>([]);
+  const [authorGroups, setAuthorGroups] = useState<AuthorGroup[]>([]);
   const [group, setGroup] = useState<number | null>(null);
-  const [claims, setClaims] = useState<{ id: number; name: string }[]>([]);
+  const [claims, setClaims] = useState<OperationClaim[]>([]);
   const [authorGroupClaims, setAuthorGroupClaims] = useState<
     { id: number; operationClaimId: number; authorGroupId: number }[]
   >([]);
@@ -38,6 +41,7 @@ export function Roles() {
     showSpinnerOverlay();
     try {
       const data = await authorGroupService.getAll(pageIndex, pageSize);
+      data.items.sort((a: { id: number }, b: { id: number }) => a.id - b.id);
       setAuthorGroups(data.items);
     } catch (err: any) {
       showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
@@ -51,10 +55,7 @@ export function Roles() {
     const operationClaimsService = new OperationClaimsService(session!);
     try {
       const data = await operationClaimsService.getAll(pageIndex, pageSize);
-      const clms = data.items.map((item: { id: number; name: string }) => ({
-        id: item.id,
-        name: item.name,
-      }));
+      const clms = data.items.map((item: OperationClaim) => item);
       setClaims(clms);
     } catch (err: any) {
       showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
@@ -124,13 +125,41 @@ export function Roles() {
     }
   }
 
-  const handleCheckboxChange = (claimId: number, checked: boolean) => {
+  function handleCheckboxChange(claimId: number, checked: boolean) {
     if (checked) {
       addClaim(claimId);
     } else {
       removeClaim(claimId);
     }
-  };
+  }
+
+  async function handleColorPickerChange(color: string) {
+    if (group === null) return;
+    const authorGroupService = new AuthorGroupsService(session!);
+    showSpinnerOverlay();
+    try {
+      const authorGroupToUpdate = authorGroups.find((grp) => grp.id === group);
+      if (!authorGroupToUpdate) return;
+      await authorGroupService.update(group, { ...authorGroupToUpdate, color });
+      showNotification({
+        title: 'Başarılı',
+        message: 'Kullanıcı gurubu rengi başarılı bir şekilde güncellendi.',
+        variant: 'success',
+      });
+      setAuthorGroups((prev) =>
+        prev.map((grp) => {
+          if (grp.id === group) {
+            return { ...grp, color };
+          }
+          return grp;
+        })
+      );
+    } catch (err: any) {
+      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
+    } finally {
+      hideSpinnerOverlay();
+    }
+  }
 
   const getGroupIdFromArray = (name: string) => {
     const authorGroupId = authorGroups.find((grp) => grp.name === name)?.id;
@@ -153,41 +182,74 @@ export function Roles() {
       <Text component="h1" size="xl" fw={700}>
         Kullanıcı Rol ve İzinleri
       </Text>
-      <Flex direction="column" gap="lg">
-        <Select
-          label="Kullanıcı Rolleri"
-          description="Buradan izinlerini değiştirmek istediğiniz kullanıcı rolünü seçebilirsiniz."
-          placeholder="Bir kullanıcı rolü seçin"
-          onChange={(value) => setGroup(getGroupIdFromArray(`${value}`) || null)}
-          data={authorGroups.map((authorGroup) => authorGroup.name)}
-          defaultValue={authorGroups[0]?.name}
-          allowDeselect
-          mt="md"
-        />
-        <Box pos="relative">
-          <Paper withBorder p="xs">
-            <ScrollArea h={450}>
-              <List>
-                {claims.map((claim) => (
-                  <List.Item key={claim.id}>
-                    <Checkbox
-                      color="cyan.6"
-                      iconColor="dark.8"
-                      size="md"
-                      checked={authorGroupClaims.some(
-                        (agc) => agc.operationClaimId === claim.id && agc.authorGroupId === group
-                      )}
-                      onChange={(event) =>
-                        handleCheckboxChange(claim.id, event.currentTarget.checked)
-                      }
-                      label={claim.name}
-                    />
-                  </List.Item>
-                ))}
-              </List>
-            </ScrollArea>
-          </Paper>
-        </Box>
+      <Flex mt="lg" justify="center">
+        <Flex direction="column" gap="lg">
+          <Select
+            label="Kullanıcı Rolleri"
+            description="Buradan izinlerini değiştirmek istediğiniz kullanıcı rolünü seçebilirsiniz."
+            placeholder="Bir kullanıcı rolü seçin"
+            onChange={(value) => setGroup(getGroupIdFromArray(`${value}`) || null)}
+            data={authorGroups.map((authorGroup) => authorGroup.name)}
+            defaultValue={authorGroups[0]?.name}
+            allowDeselect
+            mt="md"
+          />
+          <Box pos="relative">
+            <Paper withBorder p="xs">
+              <ScrollArea h={650}>
+                <Paper withBorder p="xs" my="xs">
+                  <Text component="h3" size="md" fw={600} ta="center" my="xs">
+                    Renk
+                  </Text>
+                  <ColorPicker
+                    mx="auto"
+                    format="hex"
+                    swatches={[
+                      `${authorGroups.find((grp) => grp.id === group)?.color}`,
+                      '#868e96',
+                      '#fa5252',
+                      '#e64980',
+                      '#be4bdb',
+                      '#7950f2',
+                      '#4c6ef5',
+                      '#228be6',
+                      '#15aabf',
+                      '#12b886',
+                      '#40c057',
+                      '#82c91e',
+                      '#fab005',
+                      '#fd7e14',
+                    ]}
+                    onChangeEnd={handleColorPickerChange}
+                    defaultValue="#000000"
+                    value={authorGroups.find((grp) => grp.id === group)?.color}
+                  />
+                </Paper>
+                <List>
+                  <Text component="h3" size="md" fw={600} ta="center" my="xs">
+                    İzinler
+                  </Text>
+                  {claims.map((claim) => (
+                    <List.Item key={claim.id}>
+                      <Checkbox
+                        color="cyan.6"
+                        iconColor="dark.8"
+                        size="md"
+                        checked={authorGroupClaims.some(
+                          (agc) => agc.operationClaimId === claim.id && agc.authorGroupId === group
+                        )}
+                        onChange={(event) =>
+                          handleCheckboxChange(claim.id, event.currentTarget.checked)
+                        }
+                        label={claim.name}
+                      />
+                    </List.Item>
+                  ))}
+                </List>
+              </ScrollArea>
+            </Paper>
+          </Box>
+        </Flex>
       </Flex>
     </Container>
   );
