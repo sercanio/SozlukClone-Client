@@ -42,7 +42,7 @@ export const options: NextAuthOptions = {
           const user = await userRes.json();
 
           if (userRes.ok && user) {
-            const autherRes = await fetch('http://localhost:60805/api/Authors/1', {
+            const autherRes = await fetch(`http://localhost:60805/api/Authors/${user.author.id}`, {
               method: 'GET',
               headers: {
                 Authorization: `Bearer ${accessToken}`,

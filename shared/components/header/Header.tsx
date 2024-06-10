@@ -1,14 +1,16 @@
 import Link from 'next/link';
 import { Group, Container, Button } from '@mantine/core';
-import { IconLayoutDashboard, IconLogout, IconUser } from '@tabler/icons-react';
+import { IconLayoutDashboard, IconUser } from '@tabler/icons-react';
 import { getServerSession } from 'next-auth';
 import BurgerMenu from './BurgerMenu/BurgerMenu';
 import styles from './header.module.css';
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import './override.css';
+import LogoutButton from './LogoutButton';
 
 export async function HeaderMenu() {
   const session = await getServerSession(options);
+
   const links = [
     { link: '/auth/signin', label: 'giriş yap', type: 'link' },
     { link: '/auth/signup', label: 'kayıt ol', type: 'link' },
@@ -23,9 +25,9 @@ export async function HeaderMenu() {
     },
     {
       link: '/api/auth/signout',
-      label: 'çıkış',
+      label: '',
       type: 'button',
-      icon: <IconLogout size={16} />,
+      icon: <LogoutButton />,
     },
   ];
 
@@ -67,16 +69,11 @@ export async function HeaderMenu() {
 
   const items = session?.user ? menuItems(authLinks) : menuItems(links);
   const adminIems = session?.user?.groupId === 1 ? menuItems(developerLinks) : null;
+
   return (
     <Container component="header" size="xl" className={styles.header}>
       <div className={styles.inner}>
-        <Button
-          key="asdasdasd"
-          component={Link}
-          href="/"
-          // onClick={link.onclick}
-          className={styles.link}
-        >
+        <Button component={Link} href="/" className={styles.link}>
           SozlukClone
         </Button>
         <Group gap={5} visibleFrom="sm">
