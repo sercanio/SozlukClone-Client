@@ -38,13 +38,15 @@ export function Users() {
   const authorGroupService = new AuthorGroupsService(session!);
 
   useEffect(() => {
-    getAuthorGroups(0, 10);
+    (async () => {
+      await getAuthorGroups(0, 10);
+    })();
   }, []);
 
   useEffect(() => {
-    if (authorDetails) {
-      fetchAuthorDetails(authorDetails?.id);
-    }
+    (async () => {
+      if (group) await fetchAuthorDetails(authorDetails?.id);
+    })();
   }, [group]);
 
   async function getAuthorGroups(pageIndex: number, pageSize: number) {
@@ -93,25 +95,23 @@ export function Users() {
     }
   }
 
-  function fetchAuthorDetails(authorId: number) {
+  async function fetchAuthorDetails(authorId: number) {
     showSpinnerOverlay();
-    authorService
-      .getById(authorId)
-      .then((data) => {
-        setAuthorDetails(data);
-        hideSpinnerOverlay();
-      })
-      .catch((err) => {
-        showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
-        hideSpinnerOverlay();
-      });
+    try {
+      const data = await authorService.getById(authorId);
+      setAuthorDetails(data);
+      hideSpinnerOverlay();
+    } catch (err: any) {
+      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
+      hideSpinnerOverlay();
+    }
   }
 
-  function handleAutocompleteSelect(value: string) {
+  async function handleAutocompleteSelect(value: string) {
     const selectedAuthor = usersData[value];
     if (selectedAuthor) {
       const selectedAuthorId = selectedAuthor.id;
-      fetchAuthorDetails(selectedAuthorId);
+      await fetchAuthorDetails(selectedAuthorId);
     }
   }
 
@@ -195,7 +195,7 @@ export function Users() {
               withRowBorders={false}
             >
               <Table.Tbody>
-                <Table.Tr key="asdasdsadasd123">
+                <Table.Tr>
                   <Table.Td>
                     <Text size="md">E-posta : </Text>
                   </Table.Td>
@@ -203,7 +203,7 @@ export function Users() {
                     <Text size="md">{authorDetails?.user?.email}</Text>
                   </Table.Td>
                 </Table.Tr>
-                <Table.Tr key="asdasdsadasd">
+                <Table.Tr>
                   <Table.Td>
                     <Text size="md">Kayıt: </Text>
                   </Table.Td>
@@ -211,7 +211,7 @@ export function Users() {
                     <Text size="md">{formatDate(authorDetails.createdDate)}</Text>
                   </Table.Td>
                 </Table.Tr>
-                <Table.Tr key="asdasdsadasd11">
+                <Table.Tr>
                   <Table.Td>
                     <Text size="md">Rol: </Text>
                   </Table.Td>

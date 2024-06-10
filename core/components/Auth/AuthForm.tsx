@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
+import { signIn, useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 import { useToggle, upperFirst } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import {
@@ -11,30 +13,30 @@ import {
   Group,
   PaperProps,
   Button,
-  // Divider,
-  // Checkbox,
   Anchor,
   Stack,
 } from '@mantine/core';
-import { usePathname } from 'next/navigation';
-import { signIn } from 'next-auth/react';
-// import { GoogleButton } from '../Button/OTP/GoogleButton';
-// import { TwitterButton } from '../Button/OTP/TwitterButton';
+import AuthService from '@/core/services/authService/authService';
+import useNotificationStore from '@/store/notificationStore';
+import useLoadingStore from '@/store/loadingStore';
 
 export function AuthForm(props: PaperProps) {
   const pathName = usePathname();
   const [type, toggle] = useToggle(['login', 'register']);
+  const session = useSession();
+  const authService = new AuthService(session!);
+  const showNotification = useNotificationStore((state) => state.showNotification);
+  const { showSpinnerOverlay, hideSpinnerOverlay } = useLoadingStore();
 
   useEffect(() => {
     pathName === '/auth/signup' || type === 'register' ? toggle('register') : toggle('login');
-  }, []);
+  }, [pathName, type, toggle]);
 
   const form = useForm({
     initialValues: {
       email: '',
       userName: '',
       password: '',
-      // terms: true,
     },
 
     validate: {
@@ -46,28 +48,33 @@ export function AuthForm(props: PaperProps) {
 
   const handleSubmit = async () => {
     if (type === 'register') {
-      const res = await fetch('http://localhost:60805/api/Authors', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
+      try {
+        const requestData = {
           userName: form.values.userName,
           email: form.values.email,
           password: form.values.password,
-        }),
-      });
-      const data = await res.json();
-      if (res.ok && data.userId) {
+          biography: 'string',
+          profilePictureUrl: 'string',
+          coverPictureUrl: 'string',
+          age: 0,
+          gender: 1,
+        };
+        showSpinnerOverlay();
+        await authService.register(requestData);
         toggle();
+        hideSpinnerOverlay();
+      } catch (error: any) {
+        showNotification({ title: 'Başarısız', message: error.message, variant: 'error' });
+        hideSpinnerOverlay();
       }
     } else {
+      showSpinnerOverlay();
       await signIn('credentials', {
         email: form.values.email,
         password: form.values.password,
         callbackUrl: `${window.location.origin}/`,
       });
+      hideSpinnerOverlay();
     }
   };
 
@@ -76,19 +83,6 @@ export function AuthForm(props: PaperProps) {
       <Text size="xl" fw={700} mb="lg">
         {upperFirst(type)}
       </Text>
-
-      {/* OTP Authentication */}
-
-      {/* <Text size="lg" fw={500}>
-        Welcome to Mantine, {type} with
-      </Text>
-
-      <Group grow mb="md" mt="md">
-        <GoogleButton radius="none">Google</GoogleButton>
-        <TwitterButton radius="none">Twitter</TwitterButton>
-      </Group>
-
-      <Divider label="Or continue with email" labelPosition="center" my="lg" /> */}
 
       <form onSubmit={form.onSubmit(() => handleSubmit())}>
         <Stack>
@@ -121,14 +115,6 @@ export function AuthForm(props: PaperProps) {
             error={form.errors.password && 'Password should include at least 6 characters'}
             radius="none"
           />
-
-          {/* {type === 'register' && (
-            <Checkbox
-              label="I accept terms and conditions"
-              checked={form.values.terms}
-              onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
-            />
-          )} */}
         </Stack>
 
         <Group justify="space-between" mt="xl">
