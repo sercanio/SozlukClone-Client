@@ -13,9 +13,9 @@ export interface Author {
   activeBadgeId: number;
 }
 
-export interface AuthorGroupsGetAllResponse extends GetAllResponse<Author> {}
+export interface AuthorsGetAllResponse extends GetAllResponse<Author> {}
 
-export interface GetByIdResponse extends Author {
+export interface AuthorsGetByIdResponse extends Author {
   createdDate: string;
   user: {
     id: string;
@@ -25,11 +25,11 @@ export interface GetByIdResponse extends Author {
   titles: any[]; // Adjust this type accordingly if there are specific title types
 }
 
-export interface UpdateRequest extends Omit<Author, 'id' | 'userId'> {}
+export interface AuthorsUpdateRequest extends Author {}
 
-export interface UpdateResponse extends Author {}
+export interface AuthorsUpdateResponse extends Author {}
 
-export interface SearchByUserNameRequest {
+export interface AuthorsSearchByUserNameRequest {
   sort: {
     field: string;
     dir: 'asc' | 'desc';
@@ -41,4 +41,10 @@ export interface SearchByUserNameRequest {
   };
 }
 
-export interface SearchByUserNameResponse extends Pick<Author, 'id' | 'userId' | 'userName'> {}
+export type AuthorsSearchByUserNameItem = Pick<Author, 'id' | 'userId' | 'userName'> & {
+  profileImage: string;
+  email: string;
+};
+
+export interface AuthorsSearchByUserNameResponse
+  extends GetAllResponse<AuthorsSearchByUserNameItem> {}

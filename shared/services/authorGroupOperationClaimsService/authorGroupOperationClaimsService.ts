@@ -1,10 +1,9 @@
 import { Session } from 'next-auth';
 import BackendService from '@/core/services/backendService/backendService';
 import {
-  AddClaimRequest,
-  AddClaimResponse,
+  AuthorGroupOperationClaimAddClaimRequest,
+  AuthorGroupOperationClaimGetByIdResponse,
   AuthorGroupOperationClaimsGetAllResponse,
-  GetByIdResponse,
 } from '@/types/DTOs/AuthorGroupOperationClaimsDTOs';
 
 export default class AuthorGroupOperationClaimsService {
@@ -23,19 +22,21 @@ export default class AuthorGroupOperationClaimsService {
     );
   }
 
-  public async getById(id: number): Promise<GetByIdResponse> {
-    return this.backendService.get<GetByIdResponse>(`AuthorGroupUserOperationClaims/${id}`);
+  public async getById(id: number): Promise<AuthorGroupOperationClaimGetByIdResponse> {
+    return this.backendService.get<AuthorGroupOperationClaimGetByIdResponse>(
+      `AuthorGroupUserOperationClaims/${id}`
+    );
   }
 
   public async addClaim(
     operationClaimId: number,
     authorGroupId: number
-  ): Promise<AddClaimResponse> {
-    const data: AddClaimRequest = { operationClaimId, authorGroupId };
-    return this.backendService.post<AddClaimResponse, AddClaimRequest>(
-      'AuthorGroupUserOperationClaims',
-      data
-    );
+  ): Promise<AuthorGroupOperationClaimGetByIdResponse> {
+    const data: AuthorGroupOperationClaimAddClaimRequest = { operationClaimId, authorGroupId };
+    return this.backendService.post<
+      AuthorGroupOperationClaimGetByIdResponse,
+      AuthorGroupOperationClaimAddClaimRequest
+    >('AuthorGroupUserOperationClaims', data);
   }
 
   public async removeClaim(id: string): Promise<void> {

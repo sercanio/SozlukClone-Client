@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import {
   Checkbox,
-  Container,
   Flex,
   List,
   Paper,
@@ -21,15 +20,17 @@ import AuthorGroupOperationClaimsService from '@/shared/services/authorGroupOper
 import OperationClaimsService from '@/shared/services/operationClaimsService/operationClaimsService';
 import './override.css';
 import { AuthorGroup } from '@/types/DTOs/AuthorGroupsDTOs';
-import { OperationClaim } from '@/types/DTOs/OperationClaimsDTOs';
+import { OperatinClaimsGetByIdResponse } from '@/types/DTOs/OperationClaimsDTOs';
+import {
+  AuthorGroupOperationClaim,
+  AuthorGroupOperationClaimsGetAllResponse,
+} from '@/types/DTOs/AuthorGroupOperationClaimsDTOs';
 
 export function Roles() {
   const [authorGroups, setAuthorGroups] = useState<AuthorGroup[]>([]);
   const [group, setGroup] = useState<number | null>(null);
-  const [claims, setClaims] = useState<OperationClaim[]>([]);
-  const [authorGroupClaims, setAuthorGroupClaims] = useState<
-    { id: number; operationClaimId: number; authorGroupId: number }[]
-  >([]);
+  const [claims, setClaims] = useState<OperatinClaimsGetByIdResponse[]>([]);
+  const [authorGroupClaims, setAuthorGroupClaims] = useState<AuthorGroupOperationClaim[]>([]);
 
   const showSpinnerOverlay = useLoadingStore((state) => state.showSpinnerOverlay);
   const hideSpinnerOverlay = useLoadingStore((state) => state.hideSpinnerOverlay);
@@ -55,7 +56,7 @@ export function Roles() {
     const operationClaimsService = new OperationClaimsService(session!);
     try {
       const data = await operationClaimsService.getAll(pageIndex, pageSize);
-      const clms = data.items.map((item: OperationClaim) => item);
+      const clms = data.items.map((item: OperatinClaimsGetByIdResponse) => item);
       setClaims(clms);
     } catch (err: any) {
       showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
@@ -68,14 +69,9 @@ export function Roles() {
     const authorGroupOperationClaimsService = new AuthorGroupOperationClaimsService(session!);
     showSpinnerOverlay();
     try {
-      const data = await authorGroupOperationClaimsService.getAll(pageIndex, pageSize);
-      const clms = data.items.map(
-        (item: { id: number; operationClaimId: number; authorGroupId: number }) => ({
-          id: item.id,
-          operationClaimId: item.operationClaimId,
-          authorGroupId: item.authorGroupId,
-        })
-      );
+      const data: AuthorGroupOperationClaimsGetAllResponse =
+        await authorGroupOperationClaimsService.getAll(pageIndex, pageSize);
+      const clms: AuthorGroupOperationClaim[] = data.items;
       setAuthorGroupClaims(clms);
     } catch (err: any) {
       showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
@@ -178,79 +174,71 @@ export function Roles() {
   }, [group]);
 
   return (
-    <Container py="none" px="sm">
-      <Text component="h1" size="xl" fw={700}>
-        Kullanıcı Rol ve İzinleri
-      </Text>
-      <Flex mt="lg" justify="center">
-        <Flex direction="column" gap="lg">
-          <Select
-            label="Kullanıcı Rolleri"
-            description="Buradan izinlerini değiştirmek istediğiniz kullanıcı rolünü seçebilirsiniz."
-            placeholder="Bir kullanıcı rolü seçin"
-            onChange={(value) => setGroup(getGroupIdFromArray(`${value}`) || null)}
-            data={authorGroups.map((authorGroup) => authorGroup.name)}
-            defaultValue={authorGroups[0]?.name}
-            allowDeselect
-            mt="md"
-          />
-          <Box pos="relative">
-            <Paper withBorder p="xs">
-              <ScrollArea h={650}>
-                <Paper withBorder p="xs" my="xs">
-                  <Text component="h3" size="md" fw={600} ta="center" my="xs">
-                    Renk
-                  </Text>
-                  <ColorPicker
-                    mx="auto"
-                    format="hex"
-                    swatches={[
-                      `${authorGroups.find((grp) => grp.id === group)?.color}`,
-                      '#868e96',
-                      '#fa5252',
-                      '#e64980',
-                      '#be4bdb',
-                      '#7950f2',
-                      '#4c6ef5',
-                      '#228be6',
-                      '#15aabf',
-                      '#12b886',
-                      '#40c057',
-                      '#82c91e',
-                      '#fab005',
-                      '#fd7e14',
-                    ]}
-                    onChangeEnd={handleColorPickerChange}
-                    defaultValue="#000000"
-                    value={authorGroups.find((grp) => grp.id === group)?.color}
-                  />
-                </Paper>
-                <List>
-                  <Text component="h3" size="md" fw={600} ta="center" my="xs">
-                    İzinler
-                  </Text>
-                  {claims.map((claim) => (
-                    <List.Item key={claim.id}>
-                      <Checkbox
-                        color="cyan.6"
-                        iconColor="dark.8"
-                        size="md"
-                        checked={authorGroupClaims.some(
-                          (agc) => agc.operationClaimId === claim.id && agc.authorGroupId === group
-                        )}
-                        onChange={(event) =>
-                          handleCheckboxChange(claim.id, event.currentTarget.checked)
-                        }
-                        label={claim.name}
-                      />
-                    </List.Item>
-                  ))}
-                </List>
-              </ScrollArea>
+    <Flex direction="column" gap="lg" w="100%">
+      <Select
+        label="Kullanıcı Rolleri"
+        description="Buradan ayarlarını değiştirmek istediğiniz kullanıcı rolünü seçebilirsiniz."
+        placeholder="Bir kullanıcı rolü seçin"
+        onChange={(value) => setGroup(getGroupIdFromArray(`${value}`) || null)}
+        data={authorGroups.map((authorGroup) => authorGroup.name)}
+        defaultValue={authorGroups[0]?.name}
+        allowDeselect
+      />
+      <Box pos="relative">
+        <Paper withBorder p="xs">
+          <ScrollArea h={650}>
+            <Paper withBorder p="xs" my="xs">
+              <Text component="h3" size="md" fw={600} ta="center" my="xs">
+                Kullanıcı Adı Rengi
+              </Text>
+              <ColorPicker
+                mx="auto"
+                format="hex"
+                swatches={[
+                  `${authorGroups.find((grp) => grp.id === group)?.color}`,
+                  '#868e96',
+                  '#fa5252',
+                  '#e64980',
+                  '#be4bdb',
+                  '#7950f2',
+                  '#4c6ef5',
+                  '#228be6',
+                  '#15aabf',
+                  '#12b886',
+                  '#40c057',
+                  '#82c91e',
+                  '#fab005',
+                  '#fd7e14',
+                ]}
+                onChangeEnd={handleColorPickerChange}
+                defaultValue="#000000"
+                value={authorGroups.find((grp) => grp.id === group)?.color}
+              />
             </Paper>
-          </Box>
-        </Flex>
-      </Flex>
-    </Container>
+            <List>
+              <Text component="h3" size="md" fw={600} ta="center" my="xs">
+                Kullanıcı Rol İzinleri
+              </Text>
+              {claims.map((claim) => (
+                <List.Item key={claim.id}>
+                  <Checkbox
+                    color="cyan.6"
+                    iconColor="dark.8"
+                    size="md"
+                    checked={authorGroupClaims.some(
+                      (agc) => agc.operationClaimId === claim.id && agc.authorGroupId === group
+                    )}
+                    onChange={(event) =>
+                      handleCheckboxChange(claim.id, event.currentTarget.checked)
+                    }
+                    label={claim.name}
+                  />
+                </List.Item>
+              ))}
+            </List>
+          </ScrollArea>
+        </Paper>
+      </Box>
+    </Flex>
   );
 }

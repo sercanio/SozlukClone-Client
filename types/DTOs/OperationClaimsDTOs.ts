@@ -1,15 +1,13 @@
 import { GetAllResponse } from './BaseDTOs';
 
 export interface OperationClaim {
-  id: string;
-  userId: string;
-  operationClaimId: number;
+  id: number;
+  name: string;
+}
+
+export interface OperatinClaimsGetByIdResponse {
+  id: number;
+  name: string;
 }
 
 export interface OperationClaimsGetAllResponse extends GetAllResponse<OperationClaim> {}
-
-export interface GetByIdResponse {
-  id: string;
-  userId: string;
-  operationClaimId: number;
-}

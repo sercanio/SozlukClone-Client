@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Tooltip, UnstyledButton, Stack, rem, Container, Flex } from '@mantine/core';
+import { Tooltip, UnstyledButton, Stack, rem, Flex, Container, Text } from '@mantine/core';
 import { IconHome2, IconGauge, IconUser, IconSettings } from '@tabler/icons-react';
 import { Roles } from './DashboardNavigation/Roles';
 import { Users } from './DashboardNavigation/Users';
@@ -25,7 +25,7 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps): JS
   );
 }
 
-const mockdata = [
+const sections = [
   { icon: IconHome2, label: 'Anasayfa' },
   { icon: IconUser, label: 'Kullanıcılar' },
   { icon: IconGauge, label: 'Roller' },
@@ -35,7 +35,7 @@ const mockdata = [
 export function Dashboard() {
   const [active, setActive] = useState(0);
 
-  const links = mockdata.map((link, index) => (
+  const links = sections.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
@@ -53,14 +53,17 @@ export function Dashboard() {
           </Stack>
         </div>
       </nav>
-      {active === 0 && (
-        <Container fluid py="none" px="sm">
-          <h1>Yönetim Paneli</h1>
-        </Container>
-      )}
-      {active === 1 && <Users />}
-      {active === 2 && <Roles />}
-      {active === 3 && <Settings />}
+      <Container py="none" px="sm" w="100%">
+        <Flex direction="column" align="flex-start" gap={16} w="100%">
+          <Text component="h1" size="xl" fw={700} mb="md">
+            {sections[active].label}
+          </Text>
+        </Flex>
+        {active === 0 && <p>Yönetim Paneli</p>}
+        {active === 1 && <Users />}
+        {active === 2 && <Roles />}
+        {active === 3 && <Settings />}
+      </Container>
     </Flex>
   );
 }

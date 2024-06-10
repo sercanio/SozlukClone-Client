@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import {
-  Container,
   Flex,
   Paper,
   Box,
@@ -69,12 +68,13 @@ export function Users() {
         .then((data) => {
           const searchResults = data.items.reduce(
             (
-              acc: Record<string, { id: number; image: string }>,
-              item: { id: number; userName: string; profileImage: string }
+              acc: Record<string, { id: number; image: string; email: string }>,
+              item: { id: number; userName: string; profileImage: string; email: string }
             ) => {
               acc[item.userName] = {
                 id: item.id,
                 image: item.profileImage,
+                email: item.email,
               };
               return acc;
             },
@@ -115,7 +115,7 @@ export function Users() {
     }
   }
 
-  function getGroupIdFromArray(name: string) {
+  function getGroupIdFromArray(name: string): number | undefined {
     const authorGroupId = authorGroups.find((grp) => grp.name === name)?.id;
     return authorGroupId;
   }
@@ -132,8 +132,13 @@ export function Users() {
         id: authorDetails.id,
         userId: authorDetails.userId,
         userName: authorDetails.userName,
-        authorGroupId: getGroupIdFromArray(value),
+        authorGroupId: getGroupIdFromArray(value)!,
         activeBadgeId: authorDetails.activeBadgeId,
+        biography: null,
+        profilePictureUrl: null,
+        coverPictureUrl: null,
+        age: null,
+        gender: null,
       })
       .then(() => {
         showNotification({
@@ -164,10 +169,7 @@ export function Users() {
   );
 
   return (
-    <Container py="none" px="sm" w="100%">
-      <Text component="h1" size="xl" fw={700}>
-        Kullanıcılar
-      </Text>
+    <>
       <Paper withBorder p="xs">
         <Autocomplete
           data={Object.keys(usersData)}
@@ -234,6 +236,6 @@ export function Users() {
           </Box>
         </Flex>
       )}
-    </Container>
+    </>
   );
 }
