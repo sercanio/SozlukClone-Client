@@ -55,7 +55,7 @@ export function Dashboard() {
       </nav>
       <Container py="none" px="sm" w="100%">
         <Flex direction="column" align="flex-start" gap={16} w="100%">
-          <Text component="h1" size="xl" fw={700} mb="md">
+          <Text component="h2" size="xl" fw={700} mb="md" c="cyan.6">
             {sections[active].label}
           </Text>
         </Flex>

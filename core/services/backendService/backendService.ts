@@ -1,4 +1,3 @@
-// shared/services/BackendService.ts
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { Session } from 'next-auth';
 import { ApiError } from '../apiError/ApiError';
@@ -39,6 +38,32 @@ export default class BackendService {
 
   public async delete<T>(url: string, headers?: RequestHeaders): Promise<T> {
     return this.request<T>({ method: 'DELETE', url, headers });
+  }
+
+  public async postFormData<T>(url: string, formData: FormData): Promise<T> {
+    try {
+      const response = await this.axiosInstance.post<T>(url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
+  }
+
+  public async updateFormData<T>(url: string, formData: FormData): Promise<T> {
+    try {
+      const response = await this.axiosInstance.put<T>(url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
   private async request<T>(config: AxiosRequestConfig): Promise<T> {

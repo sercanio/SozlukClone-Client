@@ -18,13 +18,13 @@ import useNotificationStore from '@/store/notificationStore';
 import useLoadingStore from '@/store/loadingStore';
 import AuthorGroupOperationClaimsService from '@/shared/services/authorGroupOperationClaimsService/authorGroupOperationClaimsService';
 import OperationClaimsService from '@/shared/services/operationClaimsService/operationClaimsService';
-import './override.css';
 import { AuthorGroup } from '@/types/DTOs/AuthorGroupsDTOs';
 import { OperatinClaimsGetByIdResponse } from '@/types/DTOs/OperationClaimsDTOs';
 import {
   AuthorGroupOperationClaim,
   AuthorGroupOperationClaimsGetAllResponse,
-} from '@/types/DTOs/AuthorGroupOperationClaimsDTOs';
+  } from '@/types/DTOs/AuthorGroupOperationClaimsDTOs';
+import './override.css';
 
 export function Roles() {
   const [authorGroups, setAuthorGroups] = useState<AuthorGroup[]>([]);
