@@ -41,7 +41,7 @@ export function Settings() {
     initialValues: {
       siteName: '',
       siteDescription: '',
-      siteFavicon: '',
+      siteFavIcon: '',
       siteLogo: '',
       siteLogoFooter: '',
       siteLogoMobile: '',
@@ -70,13 +70,13 @@ export function Settings() {
         form.setValues({
           siteName: settings.siteName,
           siteDescription: settings.siteDescription,
-          siteFavicon: settings.siteFavIcon!,
+          siteFavIcon: settings.siteFavIcon!,
           siteLogo: settings.siteLogo!,
           siteLogoFooter: settings.siteLogoFooter!,
           siteLogoMobile: settings.siteLogoMobile!,
           maxTitleLength: settings.maxTitleLength!.toString(),
           defaultAuthorGroupId: settings.defaultAuthorGroupId!.toString(),
-          IsAuthorRegistrationAllowed: settings.isAuthorRegistrationAllowed === 'true',
+          IsAuthorRegistrationAllowed: settings.isAuthorRegistrationAllowed,
           maxEntryLength: settings.maxEntryLength!.toString(),
         });
       }
@@ -108,7 +108,7 @@ export function Settings() {
       formData.append('siteName', values.siteName);
       formData.append('siteDescription', values.siteDescription);
       formData.append('defaultAuthorGroupId', values.defaultAuthorGroupId);
-      formData.append('siteFavicon', values.siteFavIcon);
+      formData.append('siteFavIcon', values.siteFavIcon);
       formData.append('siteLogo', values.siteLogo);
       formData.append('siteLogoFooter', values.siteLogo);
       formData.append('isAuthorRegistrationAllowed', String(values.IsAuthorRegistrationAllowed));
