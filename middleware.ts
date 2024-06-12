@@ -1,14 +1,12 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { withAuth } from 'next-auth/middleware';
 
-// This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
-  // add accessToken cookie and use refreshToken as httponly credential cookie on each request
+export default withAuth({
+  callbacks: {
+    authorized: ({ token }: any) => {
+      if (!token) return false;
+      return token.groupId && token.groupId < 5;
+    },
+  },
+});
 
-}
-//   return NextResponse.redirect(new URL('/', request.url));
-
-// See "Matching Paths" below to learn more
-export const config = {
-  matcher: '/:path*',
-};
+export const config = { matcher: ['/yonetim/panel'] };
