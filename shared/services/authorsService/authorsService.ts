@@ -25,6 +25,10 @@ export default class AuthorsService {
     return this.backendService.get<AuthorsGetByIdResponse>(`Authors/${id}`);
   }
 
+  public async getByUserName(userName: string): Promise<AuthorsGetByIdResponse> {
+    return this.backendService.get<AuthorsGetByIdResponse>(`Authors/GetByUserName?UserName=${userName}`);
+  }
+
   public async update(author: AuthorsUpdateRequest): Promise<AuthorsUpdateResponse> {
     return this.backendService.put<AuthorsUpdateResponse, AuthorsUpdateRequest>('Authors', author);
   }

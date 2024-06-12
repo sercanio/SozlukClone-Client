@@ -1,18 +1,39 @@
 import { Container, Paper, Text } from '@mantine/core';
+import { getServerSession } from 'next-auth';
+import { Session } from 'next-auth/core/types';
+import { Metadata, ResolvingMetadata } from 'next/types';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import AuthorsService from '@/shared/services/authorsService/authorsService';
+import { AuthorsGetByIdResponse } from '@/types/DTOs/AuthorsDTOs';
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const { slug } = params;
-  let author = null;
-  const data = await fetch(`http://localhost:60805/api/Authors/GetByUserName?UserName=${slug}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
+type Props = {
+  params: { id: string; session: Session; slug: string; author: AuthorsGetByIdResponse };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const session = await getServerSession(options);
+  params.session = session!;
+
+  const authorsService = new AuthorsService(session!);
+  const author = await authorsService.getByUserName(params.slug[0]);
+
+  const previousImages = (await parent).openGraph?.images || [];
+
+  return {
+    title: `Yazar ${params.slug}`,
+    openGraph: {
+      images: [`${author.profilePictureUrl}`, ...previousImages],
     },
-    credentials: 'include',
-  });
-  if (data.ok && data.status === 200) {
-    author = await data.json();
-  }
+  };
+}
+
+export default async function Page({ params }: Props) {
+  const { session } = params;
+  const authorsService = new AuthorsService(session!);
+  const author = await authorsService.getByUserName(params.slug[0]);
 
   return (
     <Container size="lg" px="lg" component="main">

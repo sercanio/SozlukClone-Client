@@ -41,7 +41,7 @@ export function Settings() {
     initialValues: {
       siteName: '',
       siteDescription: '',
-      siteFavIcon: '',
+      siteFavicon: '',
       siteLogo: '',
       siteLogoFooter: '',
       siteLogoMobile: '',
@@ -53,10 +53,12 @@ export function Settings() {
     validate: {
       siteName: (value) => (value ? null : 'Site Name is required'),
       siteDescription: (value) => (value ? null : 'Site Description is required'),
-      siteFavIcon: (value: string | null) =>
-        value && !value.endsWith('.ico') ? 'Favicon should be a .ico file' : null,
-      siteLogo: (value: string | null) =>
-        value && !value.endsWith('.png') ? 'Logo should be a .png file' : null,
+      siteFavIcon: (value: File | null) =>
+        value && value.name && !value.name.endsWith('.ico')
+          ? 'Favicon should be a .ico file'
+          : null,
+      siteLogo: (value: File | null) =>
+        value && value.name && !value.name.endsWith('.png') ? 'Logo should be a .png file' : null,
     },
   });
 
@@ -68,13 +70,13 @@ export function Settings() {
         form.setValues({
           siteName: settings.siteName,
           siteDescription: settings.siteDescription,
-          siteFavIcon: settings.siteFavIcon!,
+          siteFavicon: settings.siteFavIcon!,
           siteLogo: settings.siteLogo!,
           siteLogoFooter: settings.siteLogoFooter!,
           siteLogoMobile: settings.siteLogoMobile!,
           maxTitleLength: settings.maxTitleLength!.toString(),
           defaultAuthorGroupId: settings.defaultAuthorGroupId!.toString(),
-          IsAuthorRegistrationAllowed: settings.isAuthorRegistrationAllowed!,
+          IsAuthorRegistrationAllowed: settings.isAuthorRegistrationAllowed === 'true',
           maxEntryLength: settings.maxEntryLength!.toString(),
         });
       }
@@ -109,7 +111,7 @@ export function Settings() {
       formData.append('siteFavicon', values.siteFavIcon);
       formData.append('siteLogo', values.siteLogo);
       formData.append('siteLogoFooter', values.siteLogo);
-      formData.append('isAuthorRegistrationAllowed', values.IsAuthorRegistrationAllowed);
+      formData.append('isAuthorRegistrationAllowed', String(values.IsAuthorRegistrationAllowed));
       formData.append('maxTitleLength', values.maxTitleLength);
       formData.append('maxEntryLength', values.maxEntryLength);
 
@@ -158,7 +160,7 @@ export function Settings() {
                   placeholder="Favicon"
                   leftSectionPointerEvents="none"
                   key={form.key('siteFavIcon')}
-                  {...form.getInputProps('siteFavicon')}
+                  {...form.getInputProps('siteFavIcon')}
                 />
                 <FileInput
                   flex={1}
@@ -203,7 +205,7 @@ export function Settings() {
                   flex={1}
                   label="Maksimum başlık uzunluğu (karakter)"
                   placeholder="Negatif sayı girmeyin"
-                  allowNegative={false}
+                  min={0}
                   key={form.key('maxTitleLength')}
                   {...form.getInputProps('maxTitleLength')}
                   w={{ base: '100%', xs: '50%' }}
@@ -212,7 +214,7 @@ export function Settings() {
                   flex={1}
                   label="Maksimum tanım uzunluğu (karakter)"
                   placeholder="Negatif sayı girmeyin"
-                  allowNegative={false}
+                  min={0}
                   key={form.key('maxEntryLength')}
                   {...form.getInputProps('maxEntryLength')}
                   w={{ base: '100%', xs: '50%' }}
