@@ -7,6 +7,7 @@ import styles from './header.module.css';
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import './override.css';
 import LogoutButton from './LogoutButton';
+import SearchButton from './SearchInput';
 
 export async function HeaderMenu() {
   const session = await getServerSession(options);
@@ -76,6 +77,7 @@ export async function HeaderMenu() {
         <Button component={Link} href="/" className={styles.link}>
           SozlukClone
         </Button>
+        <SearchButton />
         <Group gap={5} visibleFrom="sm">
           {adminIems}
           {items}

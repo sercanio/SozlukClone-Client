@@ -12,6 +12,7 @@ type Props = {
 
 export async function generateMetadata(
   { params }: Props,
+
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const session = await getServerSession(options);
@@ -35,6 +36,7 @@ export default async function HomePage({ params }: Props) {
 
   const response = await titleService.getAll();
   const titles = [...(await response.items)];
+
   return (
     <Container size="xl" px="lg">
       <ul>

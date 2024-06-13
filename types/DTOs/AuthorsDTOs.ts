@@ -48,3 +48,11 @@ export type AuthorsSearchByUserNameItem = Pick<Author, 'id' | 'userId' | 'userNa
 
 export interface AuthorsSearchByUserNameResponse
   extends GetAllResponse<AuthorsSearchByUserNameItem> {}
+
+export interface EntryAuthorInTitle {
+  id: number;
+  userId: string;
+  userName: string;
+  profilePictureUrl: string;
+  authorGroupId: number;
+}

@@ -61,34 +61,29 @@ export function Users() {
     }
   }
 
-  function searchAuthorByUserName(userName: string, pageIndex: number, pageSize: number) {
+  async function searchAuthorByUserName(userName: string, pageIndex: number, pageSize: number) {
     if (userName.length > 1) {
       setAutocompleteError(null);
       showSpinnerOverlay();
-      authorService
-        .searchByUserName(userName, pageIndex, pageSize)
-        .then((data) => {
-          const searchResults = data.items.reduce(
-            (
-              acc: Record<string, { id: number; image: string; email: string }>,
-              item: { id: number; userName: string; profileImage: string; email: string }
-            ) => {
-              acc[item.userName] = {
-                id: item.id,
-                image: item.profileImage,
-                email: item.email,
-              };
-              return acc;
-            },
-            {}
-          );
-          setUsersData(searchResults);
-          hideSpinnerOverlay();
-        })
-        .catch((err) => {
-          showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
-          hideSpinnerOverlay();
-        });
+
+      try {
+        const data = await authorService.searchByUserName(userName, pageIndex, pageSize);
+        const searchResults = data.items.reduce(
+          (
+            acc: Record<string, { id: number; image: string; email: string }>,
+            item: { id: number; userName: string; profileImage: string; email: string }
+          ) => {
+            acc[item.userName] = { id: item.id, image: item.profileImage, email: item.email };
+            return acc;
+          },
+          {}
+        );
+        setUsersData(searchResults);
+      } catch (err: any) {
+        showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
+      } finally {
+        hideSpinnerOverlay();
+      }
     } else if (userName.length === 0) {
       setUsersData({});
       setAutocompleteError('Please type some characters');

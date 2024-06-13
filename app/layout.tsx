@@ -2,7 +2,6 @@ import '@mantine/core/styles.css';
 import React from 'react';
 import { Metadata } from 'next/types';
 import { Session, getServerSession } from 'next-auth';
-import { ColorSchemeScript } from '@mantine/core';
 import { Providers } from './provider';
 import { HeaderMenu } from '@/shared/components/header/Header';
 import './override.css';
@@ -50,7 +49,6 @@ export default async function RootLayout({ children }: { children: any }) {
         />
       </head>
       <body>
-        <ColorSchemeScript defaultColorScheme="auto" />
         <Providers>
           <HeaderMenu />
           {children}
