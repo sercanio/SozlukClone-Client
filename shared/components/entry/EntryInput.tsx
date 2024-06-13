@@ -102,7 +102,7 @@ export default function EntryInput({ titleId }: { titleId: number }) {
         <Button variant="outline" px="sm" py="none" onClick={() => wrapText('(bkz: ', ')')}>
           (bkz: )
         </Button>
-        <Button variant="outline" px="sm" py="none" onClick={() => wrapText('hede', '')}>
+        <Button variant="outline" px="sm" py="none" onClick={() => wrapText('(gbkz: ', ')')}>
           hede
         </Button>
         <Button variant="outline" px="sm" py="none" onClick={() => wrapText('`:', '`')}>
