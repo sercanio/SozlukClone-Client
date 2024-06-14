@@ -80,7 +80,6 @@ export default class BackendService {
       const errorMessage = error.response?.data?.message || error.message;
       const status = error.response?.status || 500;
       const statusText = error.response?.statusText || 'Internal Server Error';
-
       return new ApiError(errorMessage, status, statusText);
     }
     return new ApiError(error.message, 500, 'Internal Server Error');

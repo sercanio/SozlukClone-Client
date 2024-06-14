@@ -28,4 +28,8 @@ export default class EntriesService {
   ): Promise<TitlesGetByIdResponse> {
     return this.backendService.post<TitlesGetByIdResponse, TitlesPostRequest>('Entries', data);
   }
+
+  public async delete(id: number): Promise<void> {
+    return this.backendService.delete(`Entries/${id}`);
+  }
 }

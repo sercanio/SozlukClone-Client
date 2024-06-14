@@ -4,7 +4,6 @@ import { useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { Button, Flex, Group, Textarea } from '@mantine/core';
 import styles from './EntryInput.module.css';
-import TitlesService from '@/shared/services/titlesService/titlesService';
 import { EntriesPostRequest } from '@/types/DTOs/EntriesDTOs';
 import EntriesService from '@/shared/services/entryService/entryService';
 import useNotificationStore from '@/store/notificationStore';
@@ -119,6 +118,7 @@ export default function EntryInput({ titleId }: { titleId: number }) {
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     showSpinnerOverlay();
     const entriesService = new EntriesService(session.data!);
     try {

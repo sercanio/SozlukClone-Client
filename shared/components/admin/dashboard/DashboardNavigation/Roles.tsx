@@ -164,12 +164,12 @@ export function Roles() {
 
   useEffect(() => {
     getAuthorGroups(0, 10);
-    getClaims(0, 100);
+    getClaims(0, 1000);
   }, []);
 
   useEffect(() => {
     if (group !== null) {
-      getAuthorGroupClaims(0, 100);
+      getAuthorGroupClaims(0, 1000);
     }
   }, [group]);
 
