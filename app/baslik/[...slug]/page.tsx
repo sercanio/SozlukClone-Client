@@ -3,13 +3,13 @@ import { Box, Button, Container, Flex, Menu, Paper, Text } from '@mantine/core';
 import { getServerSession } from 'next-auth';
 import { Session } from 'next-auth/core/types';
 import { Metadata } from 'next/types';
-import { options } from '@/app/api/auth/[...nextauth]/options';
+import TitlesService from '@services/titlesService/titlesService';
+import EntryInput from '@components/Entry/EntryInput';
+import EntryFooter from '@components/Entry/EntryFooter';
 import { AuthorsGetByIdResponse } from '@/types/DTOs/AuthorsDTOs';
-import TitlesService from '@/shared/services/titlesService/titlesService';
-import EntryInput from '@/shared/components/entry/EntryInput';
+import { options } from '@/app/api/auth/[...nextauth]/options';
 import { TitlesGetByIdResponse } from '@/types/DTOs/TitlesDTOs';
 import formatDate from '@/utils/FormatDate';
-import EntryFooter from '@/shared/components/entry/EntryFooter';
 
 type Props = {
   params: { id: string; session: Session; slug: string; author: AuthorsGetByIdResponse };

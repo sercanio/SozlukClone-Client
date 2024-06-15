@@ -2,13 +2,13 @@ import '@mantine/core/styles.css';
 import React from 'react';
 import { Metadata } from 'next/types';
 import { Session, getServerSession } from 'next-auth';
+import { HeaderMenu } from '@components/Header/Header';
+import Toaster from '@components/Toaster/Toaster';
+import LoadingSpinner from '@components/LoadingOverlay/LoadingSpinner';
+import GlobalSettingsService from '@services/globalSettingsService/globalSettingsService';
 import { Providers } from './provider';
-import { HeaderMenu } from '@/shared/components/header/Header';
-import './override.css';
-import Toaster from '@/core/components/Toaster/Toaster';
-import LoadingSpinner from '@/core/components/LoadingOverlay/LoadingSpinner';
-import GlobalSettingsService from '@/shared/services/globalSettingsService/globalSettingsService';
 import { options } from './api/auth/[...nextauth]/options';
+import './override.css';
 
 type Props = {
   params: { id: string; session: Session };

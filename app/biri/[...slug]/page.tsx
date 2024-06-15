@@ -2,8 +2,8 @@ import { Container, Paper, Text } from '@mantine/core';
 import { getServerSession } from 'next-auth';
 import { Session } from 'next-auth/core/types';
 import { Metadata, ResolvingMetadata } from 'next/types';
-import { options } from '@/app/api/auth/[...nextauth]/options';
-import AuthorsService from '@/shared/services/authorsService/authorsService';
+import { options } from '@api/auth/[...nextauth]/options';
+import AuthorsService from '@services/authorsService/authorsService';
 import { AuthorsGetByIdResponse } from '@/types/DTOs/AuthorsDTOs';
 
 type Props = {

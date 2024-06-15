@@ -1,7 +1,7 @@
 // create a signin page
 
 import React from 'react';
-import { AuthForm } from '@/core/components/Auth/AuthForm';
+import { AuthForm } from '@components/Auth/AuthForm';
 import styles from '../page.module.css';
 
 export const metadata = {

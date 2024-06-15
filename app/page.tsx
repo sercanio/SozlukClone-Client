@@ -2,9 +2,9 @@ import { Metadata, ResolvingMetadata } from 'next/types';
 import { getServerSession, Session } from 'next-auth';
 import { Container } from '@mantine/core';
 import Link from 'next/link';
-import TitlesService from '@/shared/services/titlesService/titlesService';
+import TitlesService from '@services/titlesService/titlesService';
+import GlobalSettingsService from '@services/globalSettingsService/globalSettingsService';
 import { options } from './api/auth/[...nextauth]/options';
-import GlobalSettingsService from '@/shared/services/globalSettingsService/globalSettingsService';
 
 type Props = {
   params: { id: string; session: Session };

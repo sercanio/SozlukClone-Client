@@ -1,9 +1,0 @@
-header .mantine-UnstyledButton-root {
-    background-color: unset;
-    border: none;
-}
-
-header .mantine-UnstyledButton-root:hover {
-    background-color: unset;
-    color: inherit;
-}
