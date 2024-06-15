@@ -7,16 +7,21 @@ export interface Title {
   authorId: number;
   isLocked: boolean;
   slug: string;
+  entryCount: number;
   entries: EntryInTitle[];
 }
 
-export interface TitlesGetAllResponse extends GetAllResponse<Title> {}
+export interface TitlesGetAllResponse extends GetAllResponse<Omit<Title, 'entries'>> {}
 
 export interface TitlesGetByIdResponse extends Title {}
 
 export interface TitlesPostRequest {
-  title: string;
+  name: string;
   authorId: number;
+}
+
+export interface TitlesPostResponse {
+  id: number;
 }
 
 export interface TitlesSearchRequest {

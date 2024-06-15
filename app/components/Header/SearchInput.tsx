@@ -7,12 +7,13 @@ import { useForm } from '@mantine/form';
 import { Autocomplete, AutocompleteProps, Group, Button } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import TitlesService from '@services/titlesService/titlesService';
-import { TitlesGetByIdResponse } from '@types/DTOs/TitlesDTOs';
 import useNotificationStore from '@store/notificationStore';
 import useLoadingStore from '@store/loadingStore';
+import { TitlesGetByIdResponse } from '@/types/DTOs/TitlesDTOs';
 import styles from './header.module.css';
 
 export default function SearchButton(): JSX.Element {
+  const router = useRouter();
   const session = useSession();
   const [titlesData, setTitlesData] = useState<
     Record<string, { id: number; name: string; slug: string; isLocked: boolean }>
@@ -20,7 +21,6 @@ export default function SearchButton(): JSX.Element {
   const [autocompleteError, setAutocompleteError] = useState<string | null>(null);
   const showNotification = useNotificationStore((state) => state.showNotification);
   const { showSpinnerOverlay, hideSpinnerOverlay } = useLoadingStore();
-  const router = useRouter();
 
   const form = useForm({
     initialValues: {
@@ -78,7 +78,11 @@ export default function SearchButton(): JSX.Element {
   }
 
   function handleSubmit(values: typeof form.values) {
-    window.location.href = `/?q=${values.search}`;
+    const firstTitle = Object.values(titlesData)[0];
+    if (firstTitle) {
+      router.push(`/baslik/${firstTitle.slug}`);
+    }
+    router.push(`/?baslik=${values.search}`);
   }
 
   return (

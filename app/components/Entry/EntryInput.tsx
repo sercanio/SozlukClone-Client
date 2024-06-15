@@ -8,8 +8,19 @@ import useNotificationStore from '@store/notificationStore';
 import useLoadingStore from '@store/loadingStore';
 import { EntriesPostRequest } from '@/types/DTOs/EntriesDTOs';
 import styles from './EntryInput.module.css';
+import TitlesService from '@/services/titlesService/titlesService';
+import {
+  TitlesGetByIdResponse,
+  TitlesPostRequest,
+  TitlesPostResponse,
+} from '@/types/DTOs/TitlesDTOs';
 
-export default function EntryInput({ titleId }: { titleId: number }) {
+interface Props {
+  titleId?: number;
+  newTitle?: string | string[];
+}
+
+export default function EntryInput({ titleId, newTitle }: Props) {
   const [text, setText] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const session = useSession();
@@ -118,22 +129,47 @@ export default function EntryInput({ titleId }: { titleId: number }) {
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+    isItNewTitle() ? await createNewTitle() : await addNewEntry(titleId);
+  }
+
+  function isItNewTitle() {
+    return newTitle !== '';
+  }
+
+  async function createNewTitle() {
+    showSpinnerOverlay();
+    const titlesService = new TitlesService(session.data!);
+    try {
+      const data: TitlesPostRequest = {
+        name: newTitle as string,
+        authorId: session.data!.user.authorId,
+      };
+      const response = await titlesService.create<TitlesGetByIdResponse, TitlesPostRequest>(data);
+      await addNewEntry(response.id);
+      return response.id;
+    } catch (err: any) {
+      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
+      hideSpinnerOverlay();
+      return null;
+    }
+  }
+
+  async function addNewEntry(id: number | undefined) {
     showSpinnerOverlay();
     const entriesService = new EntriesService(session.data!);
     try {
       const data: EntriesPostRequest = {
         content: text,
-        titleId,
+        titleId: id,
         authorId: session.data!.user.authorId,
       };
       await entriesService.create(data);
     } catch (err: any) {
       showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
-    } finally {
       hideSpinnerOverlay();
     }
   }
+
   return (
     <form className={styles.entryInput} onSubmit={handleSubmit}>
       <Textarea

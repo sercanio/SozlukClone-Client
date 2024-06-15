@@ -3,7 +3,6 @@ import BackendService from '@services/backendService/backendService';
 import {
   TitlesGetAllResponse,
   TitlesGetByIdResponse,
-  TitlesPostRequest,
   TitlesSearchRequest,
 } from '@/types/DTOs/TitlesDTOs';
 
@@ -26,7 +25,7 @@ export default class TitlesService {
     return this.backendService.get<TitlesGetByIdResponse>(`Titles/GetBySlug?Slug=${slug}`);
   }
 
-  public async create<TitlesGetByIdResponse>(
+  public async create<TitlesGetByIdResponse, TitlesPostRequest>(
     data: TitlesPostRequest
   ): Promise<TitlesGetByIdResponse> {
     return this.backendService.post<TitlesGetByIdResponse, TitlesPostRequest>('Titles', data);
