@@ -1,10 +1,7 @@
 import { Session } from 'next-auth';
 import BackendService from '@services/backendService/backendService';
-import {
-  TitlesGetAllResponse,
-  TitlesGetByIdResponse,
-  TitlesPostRequest,
-} from '@/types/DTOs/TitlesDTOs';
+import { TitlesGetAllResponse, TitlesGetByIdResponse } from '@/types/DTOs/TitlesDTOs';
+import { EntriesPostRequest } from '@/types/DTOs/EntriesDTOs';
 
 export default class EntriesService {
   private backendService: BackendService;
@@ -23,10 +20,10 @@ export default class EntriesService {
     return this.backendService.get<TitlesGetByIdResponse>(`Entries/${id}`);
   }
 
-  public async create<TitlesGetByIdResponse>(
-    data: TitlesPostRequest
-  ): Promise<TitlesGetByIdResponse> {
-    return this.backendService.post<TitlesGetByIdResponse, TitlesPostRequest>('Entries', data);
+  public async create<EntriesGetByIdResponse>(
+    data: EntriesPostRequest
+  ): Promise<EntriesGetByIdResponse> {
+    return this.backendService.post<EntriesGetByIdResponse, EntriesPostRequest>('Entries', data);
   }
 
   public async delete(id: number): Promise<void> {

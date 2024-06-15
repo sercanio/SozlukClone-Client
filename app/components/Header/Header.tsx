@@ -72,7 +72,7 @@ export async function HeaderMenu() {
   const adminIems = session?.user?.groupId === 1 ? menuItems(developerLinks) : null;
 
   return (
-    <Container component="header" size="xl" className={styles.header}>
+    <Container component="header" size="xl" mb="xl" pt="xs" pb="lg" className={styles.header}>
       <div className={styles.inner}>
         <Button component={Link} href="/" className={styles.link}>
           SozlukClone

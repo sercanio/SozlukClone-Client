@@ -1,6 +1,6 @@
 import { Metadata } from 'next/types';
 import { Container } from '@mantine/core';
-import { Dashboard } from '@components/admin/dashboard/Dashboard';
+import { Dashboard } from '@components/Admin/dashboard/Dashboard';
 
 export const metadata: Metadata = {
   title: 'Yönetim Paneli',

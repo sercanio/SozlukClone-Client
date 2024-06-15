@@ -12,7 +12,7 @@ export interface GlobalSetting {
   maxTitleLength: number | null;
   defaultAuthorGroupId: number;
   defaultAuthorGroup?: AuthorGroupGetByIdResponse;
-  isAuthorRegistrationAllowed: boolean | null;
+  isAuthorRegistrationAllowed: boolean | undefined;
   maxEntryLength: number | null;
 }
 
@@ -30,6 +30,6 @@ export interface GlobalSettingsUpdateRequest {
   siteLogoMobile?: string | null;
   maxTitleLength?: number | null;
   defaultAuthorGroupId?: number ;
-  isAuthorRegistrationAllowed?: boolean | null;
+  isAuthorRegistrationAllowed?: boolean | undefined;
   maxEntryLength?: number | null;
 }

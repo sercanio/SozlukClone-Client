@@ -53,11 +53,11 @@ export function Settings() {
     validate: {
       siteName: (value) => (value ? null : 'Site Name is required'),
       siteDescription: (value) => (value ? null : 'Site Description is required'),
-      siteFavIcon: (value: File | null) =>
+      siteFavIcon: (value: any) =>
         value && value.name && !value.name.endsWith('.ico')
           ? 'Favicon should be a .ico file'
           : null,
-      siteLogo: (value: File | null) =>
+      siteLogo: (value: any) =>
         value && value.name && !value.name.endsWith('.png') ? 'Logo should be a .png file' : null,
     },
   });

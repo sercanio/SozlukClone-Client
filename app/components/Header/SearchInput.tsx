@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react';
 import TitlesService from '@services/titlesService/titlesService';
 import useNotificationStore from '@store/notificationStore';
 import useLoadingStore from '@store/loadingStore';
-import { TitlesGetByIdResponse } from '@/types/DTOs/TitlesDTOs';
+import { TitleSearchResponse, TitlesGetByIdResponse } from '@/types/DTOs/TitlesDTOs';
 import styles from './header.module.css';
 
 export default function SearchButton(): JSX.Element {
@@ -44,7 +44,11 @@ export default function SearchButton(): JSX.Element {
       setAutocompleteError(null);
       const titlesService = new TitlesService(session.data!);
       try {
-        const data = await titlesService.searchByTitle(title, pageIndex, pageSize);
+        const data: TitleSearchResponse = await titlesService.searchByTitle(
+          title,
+          pageIndex,
+          pageSize
+        );
         const searchResults = data.items.reduce(
           (
             acc: Record<string, { id: number; name: string; slug: string; isLocked: boolean }>,

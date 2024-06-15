@@ -11,7 +11,7 @@ export interface Title {
   entries: EntryInTitle[];
 }
 
-export interface TitlesGetAllResponse extends GetAllResponse<Omit<Title, 'entries'>> {}
+export interface TitlesGetAllResponse extends GetAllResponse<Title> {}
 
 export interface TitlesGetByIdResponse extends Title {}
 

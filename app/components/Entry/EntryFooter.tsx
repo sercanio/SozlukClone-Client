@@ -3,11 +3,11 @@
 import { useSession } from 'next-auth/react';
 import { Box, Button, Menu, Text } from '@mantine/core';
 import EntriesService from '@services/entryService/entryService';
-import { EntryInTitle } from '@types/DTOs/EntriesDTOs';
 import useNotificationStore from '@store/notificationStore';
 import useLoadingStore from '@store/loadingStore';
+import { EntryInTitle } from '@/types/DTOs/EntriesDTOs';
 
-export default function EntryFooter({ entry }: EntryInTitle) {
+export default function EntryFooter({ entry }: { entry: EntryInTitle}) {
   const session = useSession();
   const user = session.data?.user;
   const entriesService = new EntriesService(session.data!);

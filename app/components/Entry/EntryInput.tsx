@@ -9,11 +9,7 @@ import useLoadingStore from '@store/loadingStore';
 import { EntriesPostRequest } from '@/types/DTOs/EntriesDTOs';
 import styles from './EntryInput.module.css';
 import TitlesService from '@/services/titlesService/titlesService';
-import {
-  TitlesGetByIdResponse,
-  TitlesPostRequest,
-  TitlesPostResponse,
-} from '@/types/DTOs/TitlesDTOs';
+import { TitlesGetByIdResponse, TitlesPostRequest } from '@/types/DTOs/TitlesDTOs';
 
 interface Props {
   titleId?: number;
@@ -129,11 +125,12 @@ export default function EntryInput({ titleId, newTitle }: Props) {
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    // event.preventDefault();
     isItNewTitle() ? await createNewTitle() : await addNewEntry(titleId);
   }
 
   function isItNewTitle() {
-    return newTitle !== '';
+    return !!newTitle;
   }
 
   async function createNewTitle() {
@@ -149,8 +146,9 @@ export default function EntryInput({ titleId, newTitle }: Props) {
       return response.id;
     } catch (err: any) {
       showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
-      hideSpinnerOverlay();
       return null;
+    } finally {
+      hideSpinnerOverlay();
     }
   }
 
@@ -160,12 +158,13 @@ export default function EntryInput({ titleId, newTitle }: Props) {
     try {
       const data: EntriesPostRequest = {
         content: text,
-        titleId: id,
+        titleId: id as number,
         authorId: session.data!.user.authorId,
       };
       await entriesService.create(data);
     } catch (err: any) {
       showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
+    } finally {
       hideSpinnerOverlay();
     }
   }

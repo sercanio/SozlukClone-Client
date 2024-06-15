@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Box, Button, Container, Flex, Menu, Paper, Text } from '@mantine/core';
+import { Box, Flex, Paper, Text } from '@mantine/core';
 import { getServerSession } from 'next-auth';
 import { Session } from 'next-auth/core/types';
 import { Metadata } from 'next/types';
@@ -10,37 +10,37 @@ import { AuthorsGetByIdResponse } from '@/types/DTOs/AuthorsDTOs';
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import { TitlesGetByIdResponse } from '@/types/DTOs/TitlesDTOs';
 import formatDate from '@/utils/FormatDate';
+import './override.css';
 
 type Props = {
   params: { id: string; session: Session; slug: string; author: AuthorsGetByIdResponse };
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const session = await getServerSession(options);
   params.session = session!;
 
   const title = params.slug[0].split('--')[0];
-  // get by slug
 
   return {
     title: `${title}`,
   };
 }
 
-export default async function Page({ params, searchParams }: Props) {
+export default async function Page({ params }: Props) {
   const { session, slug } = params;
   const titlesService = new TitlesService(session!);
   const title = await titlesService.getBySlug<TitlesGetByIdResponse>(slug[0]);
 
   return (
-    <Container size="lg" px="lg" component="main">
-      <Text component="h1" size="xl" fw="bold">
+    <>
+      <Text component="h1" size="xl" px="xl" fw="bold">
         {title.name}
       </Text>
       {title.entries.length > 0 &&
         title.entries.map((entry) => (
-          <Paper shadow="none" p="xl" my="xl" withBorder>
+          <Paper shadow="none" p="xl" my="xl">
             <Flex direction="column" justify="space-between" gap="lg">
               <Text flex={1} pt="sm" pb="xl">
                 {entry.content}
@@ -75,6 +75,6 @@ export default async function Page({ params, searchParams }: Props) {
         ))}
 
       <EntryInput titleId={title.id} />
-    </Container>
+    </>
   );
 }

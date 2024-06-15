@@ -5,6 +5,18 @@ import { createTheme } from '@mantine/core';
 export const theme = createTheme({
   // colorScheme: 'light',
   colors: {
+    white: [
+      '#ffffff',
+      '#fdfdff',
+      '#fcfcff',
+      '#fbfbff',
+      '#fafaff',
+      '#f9f9ff',
+      '#f8f8ff',
+      '#f7f7ff',
+      '#f6f6ff',
+      '#f5f5ff',
+    ],
     deepBlue: ['#E9EDFC', '#C1CCF6', '#99ABF0', '', '', '', '', '', '', ''],
     // or replace default theme color
     // blue: ['#E9EDFC', '#C1CCF6', '#99ABF0', '', '', '', '', '', '', ''],
