@@ -80,7 +80,7 @@ export default function EntryInput({ titleId, newTitle }: Props) {
     }
 
     // eslint-disable-next-line no-alert
-    const userUrl = window.prompt('Enter URL:', '');
+    const userUrl = window.prompt('URL Girin', 'http://');
 
     if (!userUrl) return;
 
@@ -124,8 +124,8 @@ export default function EntryInput({ titleId, newTitle }: Props) {
     );
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    // event.preventDefault();
+  async function handleSubmit(event : React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     isItNewTitle() ? await createNewTitle() : await addNewEntry(titleId);
   }
 

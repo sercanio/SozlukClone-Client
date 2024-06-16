@@ -12,6 +12,7 @@ import { options } from '@/app/api/auth/[...nextauth]/options';
 import { TitlesGetByIdResponse } from '@/types/DTOs/TitlesDTOs';
 import formatDate from '@/utils/FormatDate';
 import './override.css';
+import EntriesService from '@/services/entryService/entryService';
 
 type Props = {
   params: { id: string; session: Session; slug: string; author: AuthorsGetByIdResponse };
@@ -32,7 +33,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { session, slug } = params;
+  const entriesService = new EntriesService(session!);
   const titlesService = new TitlesService(session!);
+
   const title = await titlesService.getBySlug<TitlesGetByIdResponse>(slug[0]);
 
   return (
@@ -42,7 +45,7 @@ export default async function Page({ params }: Props) {
       </Text>
       {title.entries.length > 0 &&
         title.entries.map((entry, index) => (
-          <Paper shadow="none" p="xl" my="md">
+          <Paper shadow="none" p="xl" my="md" key={index}>
             <Flex direction="column" justify="flex-start" gap="xl">
               <Flex justify="space-between" gap="sm" pr="md">
                 <Text size="xs" fw="lighter">
@@ -52,7 +55,13 @@ export default async function Page({ params }: Props) {
                   <Link href={`/entry/${entry.id}`}>#{entry.id}</Link>
                 </Text>
               </Flex>
-              <Text flex={1}>{entry.content}</Text>
+              <Box
+                flex={1}
+                dangerouslySetInnerHTML={{
+                  __html: entriesService.formatEntryContent(entry.content),
+                }}
+              />
+              <Text id="entry" flex={1}></Text>
               <Flex justify="flex-end">
                 <EntryFooter entry={entry} />
               </Flex>
@@ -62,7 +71,7 @@ export default async function Page({ params }: Props) {
                     <Text ta="right">{entry.author?.userName}</Text>
                   </Link>
                   <Text ta="right" size="xs">
-                    {formatDate(entry.createdDate)}{' '}
+                    {formatDate(entry.createdDate)}
                     {entry.updatedDate && `- ${formatDate(entry?.updatedDate)}`}
                   </Text>
                 </Flex>

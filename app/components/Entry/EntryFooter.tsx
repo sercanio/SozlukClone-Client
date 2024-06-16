@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { Button, Menu, Text } from '@mantine/core';
+import { Box, Button, Menu, Text } from '@mantine/core';
 import EntriesService from '@services/entryService/entryService';
 import useNotificationStore from '@store/notificationStore';
 import useLoadingStore from '@store/loadingStore';
