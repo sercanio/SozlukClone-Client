@@ -1,8 +1,11 @@
 /* eslint-disable no-useless-escape */
 import { Session } from 'next-auth';
 import BackendService from '@services/backendService/backendService';
-import { TitlesGetAllResponse, TitlesGetByIdResponse } from '@/types/DTOs/TitlesDTOs';
-import { EntriesPostRequest } from '@/types/DTOs/EntriesDTOs';
+import {
+  EntriesGetAllResponse,
+  EntriesGetByIdResponse,
+  EntriesPostRequest,
+} from '@/types/DTOs/EntriesDTOs';
 
 export default class EntriesService {
   private backendService: BackendService;
@@ -11,14 +14,23 @@ export default class EntriesService {
     this.backendService = new BackendService(session);
   }
 
-  public async getAll(pageIndex: number, pageSize: number): Promise<TitlesGetAllResponse> {
-    return this.backendService.get<TitlesGetAllResponse>(
+  public async getAll(pageIndex: number, pageSize: number): Promise<EntriesGetAllResponse> {
+    return this.backendService.get<EntriesGetAllResponse>(
       `Entries?PageIndex=${pageIndex}&PageSize=${pageSize}`
     );
   }
 
-  public async getById(id: number): Promise<TitlesGetByIdResponse> {
-    return this.backendService.get<TitlesGetByIdResponse>(`Entries/${id}`);
+  public async getAllForHomePage(
+    pageIndex: number,
+    pageSize: number
+  ): Promise<EntriesGetAllResponse> {
+    return this.backendService.get<EntriesGetAllResponse>(
+      `Entries/ForHomePage?PageIndex=${pageIndex}&PageSize=${pageSize}`
+    );
+  }
+
+  public async getById(id: number): Promise<EntriesGetByIdResponse> {
+    return this.backendService.get<EntriesGetByIdResponse>(`Entries/${id}`);
   }
 
   public async create<EntriesGetByIdResponse>(

@@ -10,3 +10,8 @@ ul {
 .mantine-UnstyledButton-root:hover {
     opacity: 1;
 }
+
+div h2 a {
+    color: unset;
+    text-decoration: none;
+}
