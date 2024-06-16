@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Group, Container, Button } from '@mantine/core';
+import { Group, Container, Button, Box } from '@mantine/core';
 import { IconLayoutDashboard, IconUser } from '@tabler/icons-react';
 import { getServerSession } from 'next-auth';
 import { options } from '@api/auth/[...nextauth]/options';
@@ -72,8 +72,19 @@ export async function HeaderMenu() {
   const adminIems = session?.user?.groupId === 1 ? menuItems(developerLinks) : null;
 
   return (
-    <Container component="header" size="xl" mb="xl" pt="xs" pb="lg" className={styles.header}>
-      <div className={styles.inner}>
+    <Container
+      pos="fixed"
+      top={0}
+      left={0}
+      right={0}
+      component="header"
+      size="xl"
+      mb="xl"
+      pt="xs"
+      pb="lg"
+      className={styles.header}
+    >
+      <Box className={styles.inner}>
         <Button component={Link} href="/" className={styles.link}>
           SozlukClone
         </Button>
@@ -83,7 +94,7 @@ export async function HeaderMenu() {
           {items}
         </Group>
         <BurgerMenu />
-      </div>
+      </Box>
     </Container>
   );
 }

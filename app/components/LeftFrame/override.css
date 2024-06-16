@@ -1,10 +1,15 @@
-.mantine-List-itemWrapper, .mantine-List-itemLabel  {
+.mantine-List-itemWrapper,
+.mantine-List-itemLabel {
     width: 100%;
 }
 
 
-.mantine-List-itemLabel  .mantine-Button-inner{
+.mantine-List-itemLabel .mantine-Button-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.mantine-ScrollArea-thumb {
+    background-color: light-dark(var(--mantine-color-dark-0), var(--mantine-color-dark-4)) !important;
 }

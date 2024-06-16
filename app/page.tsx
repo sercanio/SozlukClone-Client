@@ -1,6 +1,6 @@
 import { Metadata, ResolvingMetadata } from 'next/types';
 import { getServerSession, Session } from 'next-auth';
-import { Box, Container, Text } from '@mantine/core';
+import { Box, Flex, Text } from '@mantine/core';
 import GlobalSettingsService from '@services/globalSettingsService/globalSettingsService';
 import { options } from './api/auth/[...nextauth]/options';
 import EntryInput from './components/Entry/EntryInput';
@@ -33,14 +33,14 @@ export async function generateMetadata(
 export default async function HomePage({ params, searchParams }: Props) {
   const titleSearchTerm = searchParams.baslik;
   return (
-    <Box>
-      <Text component="h1" size="xl" fw="bold">
+    <Flex direction="column" justify="space-between" gap="xl">
+      <Text component="h1" size="xl" fw="bold" px="lg">
         {titleSearchTerm}
       </Text>
-      <Text component="p" size="md">
+      <Text component="p" size="md" px="lg">
         böyle bir başlık yok
       </Text>
       <EntryInput newTitle={titleSearchTerm} />
-    </Box>
+    </Flex>
   );
 }

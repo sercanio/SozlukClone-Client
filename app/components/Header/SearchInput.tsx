@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from '@mantine/form';
-import { Autocomplete, AutocompleteProps, Group, Button } from '@mantine/core';
+import { Autocomplete, AutocompleteProps, Group, Button, ActionIcon, rem } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import TitlesService from '@services/titlesService/titlesService';
 import useNotificationStore from '@store/notificationStore';
@@ -17,6 +17,7 @@ import {
 } from '@/types/DTOs/AuthorsDTOs';
 
 import styles from './header.module.css';
+import { IconArrowRight, IconSearch } from '@tabler/icons-react';
 
 export default function SearchButton(): JSX.Element {
   const router = useRouter();
@@ -156,7 +157,7 @@ export default function SearchButton(): JSX.Element {
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      <Group justify="center" mt="sm">
+      <Group justify="center">
         <Autocomplete
           data={[...Object.keys(titlesData), ...Object.keys(authorsData)]}
           renderOption={(props) => renderAutocompleteOption(props)}
@@ -168,12 +169,24 @@ export default function SearchButton(): JSX.Element {
           comboboxProps={{ transitionProps: { transition: 'slide-down', duration: 100 } }}
           key={form.key('search')}
           error={autocompleteError}
+          leftSection={<IconSearch style={{ width: rem(18), height: rem(18) }} stroke={1.5} />}
+          rightSection={
+            <ActionIcon component="div" size={32} radius="xl" variant="filled">
+              <Group justify="center" mt="sm">
+                <Button type="submit" variant="default" bottom={4}>
+                  <IconArrowRight
+                    style={{
+                      width: rem(18),
+                      height: rem(18),
+                      bottom: rem(1),
+                    }}
+                    stroke={2}
+                  />
+                </Button>
+              </Group>
+            </ActionIcon>
+          }
         />
-        <Group justify="center" mt="sm">
-          <Button type="submit" variant="default">
-            Search
-          </Button>
-        </Group>
       </Group>
     </form>
   );
