@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import { Button, Flex, Group, Textarea } from '@mantine/core';
+import { Box, Button, Flex, Group, Textarea } from '@mantine/core';
 import EntriesService from '@services/entryService/entryService';
 import useNotificationStore from '@store/notificationStore';
 import useLoadingStore from '@store/loadingStore';
@@ -170,22 +170,24 @@ export default function EntryInput({ titleId, newTitle }: Props) {
   }
 
   return (
-    <form className={styles.entryInput} onSubmit={handleSubmit}>
-      <Textarea
-        ref={textareaRef}
-        resize="both"
-        value={text}
-        onChange={(event) => setText(event.currentTarget.value)}
-        label={<EntryInputHeader />}
-        placeholder="başlık hakkında bilgi verin"
-        rows={10}
-      />
-      <Group gap="sm" align="center" justify="flex-start" mt="md" px="xs">
-        <Button type="submit" variant="transparent">
-          kenarda dursun
-        </Button>
-        <Button type="submit">yolla</Button>
-      </Group>
-    </form>
+    <Box px="lg">
+      <form className={styles.entryInput} onSubmit={handleSubmit}>
+        <Textarea
+          ref={textareaRef}
+          resize="both"
+          value={text}
+          onChange={(event) => setText(event.currentTarget.value)}
+          label={<EntryInputHeader />}
+          placeholder="başlık hakkında bilgi verin"
+          rows={10}
+        />
+        <Group gap="sm" align="center" justify="flex-start" mt="md" px="xs">
+          <Button type="submit" variant="transparent">
+            kenarda dursun
+          </Button>
+          <Button type="submit">yolla</Button>
+        </Group>
+      </form>
+    </Box>
   );
 }

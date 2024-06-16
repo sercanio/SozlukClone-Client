@@ -56,3 +56,4 @@ export interface EntryAuthorInTitle {
   profilePictureUrl: string;
   authorGroupId: number;
 }
+

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Image from 'next/image';
 import { Box, Flex, Paper, Text } from '@mantine/core';
 import { getServerSession } from 'next-auth';
@@ -19,12 +20,13 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const session = await getServerSession(options);
+  const titlesService = new TitlesService(session!);
   params.session = session!;
 
-  const title = params.slug[0].split('--')[0];
+  const title = await titlesService.getBySlug<TitlesGetByIdResponse>(params.slug[0]);
 
   return {
-    title: `${title}`,
+    title: `${title.name}`,
   };
 }
 
@@ -39,18 +41,26 @@ export default async function Page({ params }: Props) {
         {title.name}
       </Text>
       {title.entries.length > 0 &&
-        title.entries.map((entry) => (
-          <Paper shadow="none" p="xl" my="xl">
-            <Flex direction="column" justify="space-between" gap="lg">
-              <Text flex={1} pt="sm" pb="xl">
-                {entry.content}
-              </Text>
+        title.entries.map((entry, index) => (
+          <Paper shadow="none" p="xl" my="md">
+            <Flex direction="column" justify="flex-start" gap="xl">
+              <Flex justify="space-between" gap="sm" pr="md">
+                <Text size="xs" fw="lighter">
+                  {index + 1}
+                </Text>
+                <Text size="xs" fw="light">
+                  <Link href={`/entry/${entry.id}`}>#{entry.id}</Link>
+                </Text>
+              </Flex>
+              <Text flex={1}>{entry.content}</Text>
               <Flex justify="flex-end">
                 <EntryFooter entry={entry} />
               </Flex>
-              <Flex gap="md" justify="flex-end">
+              <Flex justify="flex-end" gap="md">
                 <Flex direction="column" gap="xs" style={{ width: 'fit-content' }}>
-                  <Text ta="right">{entry.author?.userName}</Text>
+                  <Link href={`/biri/${entry.author?.userName}`}>
+                    <Text ta="right">{entry.author?.userName}</Text>
+                  </Link>
                   <Text ta="right" size="xs">
                     {formatDate(entry.createdDate)}{' '}
                     {entry.updatedDate && `- ${formatDate(entry?.updatedDate)}`}
@@ -73,7 +83,6 @@ export default async function Page({ params }: Props) {
             </Flex>
           </Paper>
         ))}
-
       <EntryInput titleId={title.id} />
     </>
   );

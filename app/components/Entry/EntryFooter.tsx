@@ -1,13 +1,13 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { Box, Button, Menu, Text } from '@mantine/core';
+import { Button, Menu, Text } from '@mantine/core';
 import EntriesService from '@services/entryService/entryService';
 import useNotificationStore from '@store/notificationStore';
 import useLoadingStore from '@store/loadingStore';
 import { EntryInTitle } from '@/types/DTOs/EntriesDTOs';
 
-export default function EntryFooter({ entry }: { entry: EntryInTitle}) {
+export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
   const session = useSession();
   const user = session.data?.user;
   const entriesService = new EntriesService(session.data!);
@@ -33,22 +33,20 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle}) {
   }
 
   return (
-    <Box>
-      <Menu shadow="md" width={150}>
-        <Menu.Target>
-          <Button variant="transparent">
-            <Text fw={600}>...</Text>
-          </Button>
-        </Menu.Target>
-        <Menu.Dropdown>
-          {user?.id === entry.author?.userId && (
-            <Menu.Item onClick={handleEntryDelete}>sil</Menu.Item>
-          )}
-          {user?.id === entry.author?.userId && <Menu.Item>güncelle</Menu.Item>}
-          <Menu.Item>modlog</Menu.Item>
-          <Menu.Item>şikayet</Menu.Item>
-        </Menu.Dropdown>
-      </Menu>
-    </Box>
+    <Menu shadow="md" width={150}>
+      <Menu.Target>
+        <Button variant="transparent">
+          <Text fw={600}>...</Text>
+        </Button>
+      </Menu.Target>
+      <Menu.Dropdown>
+        {user?.id === entry.author?.userId && (
+          <Menu.Item onClick={handleEntryDelete}>sil</Menu.Item>
+        )}
+        {user?.id === entry.author?.userId && <Menu.Item>güncelle</Menu.Item>}
+        <Menu.Item>modlog</Menu.Item>
+        <Menu.Item>şikayet</Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
   );
 }

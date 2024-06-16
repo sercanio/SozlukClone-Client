@@ -62,7 +62,7 @@ export default async function RootLayout({ children }: Props) {
       <body>
         <Providers>
           <HeaderMenu />
-          <Container size="xl" px="xl" mt="xl" component="main">
+          <Container size="xl" px="xl" my="xl" component="main">
             <Flex align="flex-start" justify="flex-start">
               <LeftFrame titles={titles} />
               <Box component="main" px="md" w="100%">
