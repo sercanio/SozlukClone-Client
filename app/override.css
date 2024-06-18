@@ -8,11 +8,11 @@ ul {
     padding: .5rem;
 }
 
-.mantine-UnstyledButton-root {
+.element-UnstyledButton-root {
     opacity: .8;
 }
 
-.mantine-UnstyledButton-root:hover {
+.element-UnstyledButton-root:hover {
     opacity: 1;
 }
 

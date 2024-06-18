@@ -9,10 +9,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <>
       <ColorSchemeScript defaultColorScheme="auto" />
       <SessionProvider>
-        <MantineProvider theme={theme} defaultColorScheme="auto">
+        <MantineProvider theme={theme} defaultColorScheme="auto" classNamesPrefix="element"
+        >
           {children}
         </MantineProvider>
-      </SessionProvider>
+      </SessionProvider >
     </>
   );
 }

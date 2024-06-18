@@ -1,28 +1,28 @@
-.mantine-List-itemWrapper .mantine-List-itemLabel {
+.element-List-itemWrapper .element-List-itemLabel {
     width: 100%;
     padding: 0;
 }
 
 
-.mantine-List-itemLabel .mantine-Button-inner {
+.element-List-itemLabel .element-Button-inner {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     line-height: unset !important; 
 }
 
-.mantine-List-itemLabel .mantine-Button-inner .mantine-Button-label {
+.element-List-itemLabel .element-Button-inner .element-Button-label {
     word-wrap: break-word;
     text-align: left;
     white-space: normal !important;
     padding-right: 0.25rem;
 }
 
-.mantine-List-itemLabel .mantine-Button-inner .mantine-Button-section{
+.element-List-itemLabel .element-Button-inner .element-Button-section{
     margin: auto .25rem;
 }
 
 
-.mantine-ScrollArea-thumb {
-    background-color: light-dark(var(--mantine-color-dark-0), var(--mantine-color-dark-4)) !important;
+.element-ScrollArea-thumb {
+    background-color: light-dark(var(--element-color-dark-0), var(--element-color-dark-4)) !important;
 }

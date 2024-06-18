@@ -1,10 +1,10 @@
-header .mantine-UnstyledButton-root {
+header .element-UnstyledButton-root {
     color: inherit;
     background-color: unset;
     border: none;
 }
 
-header .mantine-UnstyledButton-root:hover {
+header .element-UnstyledButton-root:hover {
     background-color: unset;
     color: inherit;
 }
