@@ -125,7 +125,7 @@ export default function EntryInput({ titleId, newTitle }: Props) {
   }
 
   async function handleSubmit(event : React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+    // event.preventDefault();
     isItNewTitle() ? await createNewTitle() : await addNewEntry(titleId);
   }
 

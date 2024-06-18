@@ -21,8 +21,8 @@ export default class TitlesService {
     return this.backendService.get<TitlesGetByIdResponse>(`Titles/${id}`);
   }
 
-  public async getBySlug<TitlesGetByIdResponse>(slug: string): Promise<TitlesGetByIdResponse> {
-    return this.backendService.get<TitlesGetByIdResponse>(`Titles/GetBySlug?Slug=${slug}`);
+  public async getBySlug<TitlesGetByIdResponse>(slug: string, pageIndex: number, pageSize: number): Promise<TitlesGetByIdResponse> {
+    return this.backendService.get<TitlesGetByIdResponse>(`Titles/GetBySlug?PageIndex=${pageIndex}&PageSize=${pageSize}&Slug=${slug}`);
   }
 
   public async getByName<TitlesGetByIdResponse>(name: string): Promise<TitlesGetByIdResponse> {
