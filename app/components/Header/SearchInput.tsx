@@ -58,6 +58,7 @@ export default function SearchButton(): JSX.Element {
 
   async function searchTitles(title: string, pageIndex: number, pageSize: number) {
     if (title.length > 0) {
+      setAuthorsData({});
       form.setValues({ search: title });
       setAutocompleteError(null);
       const titlesService = new TitlesService(session.data!);
@@ -94,6 +95,7 @@ export default function SearchButton(): JSX.Element {
 
   async function searchAuthors(authorUserName: string, pageIndex: number, pageSize: number) {
     if (authorUserName.length > 0) {
+      setTitlesData({});
       form.setValues({ search: authorUserName });
       setAutocompleteError(null);
       const authorService = new AuthorsService(session.data!);
@@ -111,7 +113,7 @@ export default function SearchButton(): JSX.Element {
             >,
             item: AuthorsSearchByUserNameItem
           ) => {
-            acc[item.userName] = {
+            acc[`@${item.userName}`] = {
               id: item.id,
               userName: item.userName,
               userNameDisplay: `@${item.userName}`,
@@ -132,8 +134,11 @@ export default function SearchButton(): JSX.Element {
   }
 
   async function search(query: string, pageIndex: number, pageSize: number) {
-    await searchAuthors(query, pageIndex, pageSize);
-    await searchTitles(query, pageIndex, pageSize);
+    query = query.toLocaleLowerCase();
+    if (query.startsWith("@"))
+      await searchAuthors(query.slice(1), pageIndex, pageSize);
+    else
+      await searchTitles(query, pageIndex, pageSize);
   }
 
   function handleAutocompleteSelect(item: string) {
@@ -144,6 +149,15 @@ export default function SearchButton(): JSX.Element {
     } else if (selectedAuthor) {
       router.push(`/biri/${selectedAuthor.userName}`);
     }
+  }
+
+  function handleSearchInputChange(value: string) {
+    // console.log(value);
+
+    // if (value.startsWith('@'))
+    // search(value.slice(1), 0, 10)
+    // else
+    search(value, 0, 10)
   }
 
   function handleSubmit(values: typeof form.values) {
@@ -164,7 +178,7 @@ export default function SearchButton(): JSX.Element {
           maxDropdownHeight={400}
           placeholder="ara"
           withAsterisk
-          onChange={(value) => search(value, 0, 10)}
+          onChange={(value) => handleSearchInputChange(value)}
           onOptionSubmit={(item) => handleAutocompleteSelect(item)}
           comboboxProps={{ transitionProps: { transition: 'slide-down', duration: 100 } }}
           key={form.key('search')}
