@@ -16,10 +16,7 @@ export function LeftFrame() {
   const [isComponentLoading, setIsComponentLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // (async () => {
     getLatestTitles(page, 20)
-    // }
-    // )()
   }, [page])
 
   async function getLatestTitles(pageIndex: number, pageSize: number) {
@@ -28,9 +25,6 @@ export function LeftFrame() {
     setTitles({ ...response })
     setIsComponentLoading(false);
   }
-
-  console.log(page);
-
 
   return (
     <Box p="none" h="100%" >
