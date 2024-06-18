@@ -23,7 +23,7 @@ import { OperatinClaimsGetByIdResponse } from '@/types/DTOs/OperationClaimsDTOs'
 import {
   AuthorGroupOperationClaim,
   AuthorGroupOperationClaimsGetAllResponse,
-  } from '@/types/DTOs/AuthorGroupOperationClaimsDTOs';
+} from '@/types/DTOs/AuthorGroupOperationClaimsDTOs';
 import './override.css';
 
 export function Roles() {
@@ -32,9 +32,9 @@ export function Roles() {
   const [claims, setClaims] = useState<OperatinClaimsGetByIdResponse[]>([]);
   const [authorGroupClaims, setAuthorGroupClaims] = useState<AuthorGroupOperationClaim[]>([]);
 
-  const showSpinnerOverlay = useLoadingStore((state) => state.showSpinnerOverlay);
-  const hideSpinnerOverlay = useLoadingStore((state) => state.hideSpinnerOverlay);
   const showNotification = useNotificationStore((state) => state.showNotification);
+  const { showSpinnerOverlay, hideSpinnerOverlay } = useLoadingStore();
+  
   const { data: session } = useSession();
 
   async function getAuthorGroups(pageIndex: number, pageSize: number) {

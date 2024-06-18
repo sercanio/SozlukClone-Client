@@ -1,5 +1,5 @@
 import '@mantine/core/styles.css';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Metadata } from 'next/types';
 import { Session, getServerSession } from 'next-auth';
 import { HeaderMenu } from '@components/Header/Header';
@@ -10,8 +10,6 @@ import GlobalSettingsService from '@services/globalSettingsService/globalSetting
 import { Providers } from './provider';
 import { options } from './api/auth/[...nextauth]/options';
 import LeftFrame from './components/LeftFrame/LeftFrame';
-import TitlesService from '@/services/titlesService/titlesService';
-import { TitlesGetAllResponse } from '@/types/DTOs/TitlesDTOs';
 import './override.css';
 
 type Props = {
@@ -45,11 +43,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: Props) {
-  const session = await getServerSession(options);
-  const titleService = new TitlesService(session!);
-
-  const response: TitlesGetAllResponse = await titleService.getAll();
-  const titles = [...(await response.items)];
 
   return (
     <html lang="en">
@@ -62,9 +55,9 @@ export default async function RootLayout({ children }: Props) {
       <body>
         <Providers>
           <HeaderMenu />
-          <Container size="xl" px="xl" my="xl" component="main">
-            <Flex align="flex-start" justify="flex-start">
-              <LeftFrame titles={titles} />
+          <Container size="xl" px="xl" my="xl" component="main" h="100%">
+            <Flex align="flex-start" justify="flex-start" h="100%">
+              <LeftFrame />
               <Box component="main" ml="290px" mt="85px" px="md" w="100%">
                 {children}
               </Box>

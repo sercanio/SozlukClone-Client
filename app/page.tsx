@@ -49,7 +49,7 @@ export default async function HomePage({ params, searchParams }: Props) {
     console.log(err.message)
     return null;
   }) as TitlesGetByIdResponse;
-  
+
 
   title && redirect(`baslik/${title.slug}`);
 

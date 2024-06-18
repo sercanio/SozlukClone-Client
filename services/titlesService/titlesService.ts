@@ -13,8 +13,8 @@ export default class TitlesService {
     this.backendService = new BackendService(session);
   }
 
-  public async getAll(): Promise<TitlesGetAllResponse> {
-    return this.backendService.get<TitlesGetAllResponse>('Titles?PageIndex=0&PageSize=50');
+  public async getAll(pageIndex: number, pageSize: number): Promise<TitlesGetAllResponse> {
+    return this.backendService.get<TitlesGetAllResponse>(`Titles?PageIndex=${pageIndex}&PageSize=${pageSize}`);
   }
 
   public async getById(id: number): Promise<TitlesGetByIdResponse> {
@@ -25,7 +25,7 @@ export default class TitlesService {
     return this.backendService.get<TitlesGetByIdResponse>(`Titles/GetBySlug?Slug=${slug}`);
   }
 
-  public async getByName<TitlesGetByIdResponse>(name: string): Promise<TitlesGetByIdResponse>{
+  public async getByName<TitlesGetByIdResponse>(name: string): Promise<TitlesGetByIdResponse> {
     return this.backendService.get<TitlesGetByIdResponse>(`Titles/GetByTitleName?Name=${name}`);
   }
 

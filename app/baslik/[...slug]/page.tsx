@@ -41,11 +41,15 @@ export default async function Page({ params }: Props) {
       <Text component="h1" size="xl" px="xl" fw="bold">
         {title.name}
       </Text>
-      {title.entries.length > 0 &&
-        title.entries.map((entry, index) => (
-          <EntryCard key={entry.id} entry={entry} index={index} session={session} />
-        ))}
-      <EntryInput titleId={title.id} />
+      <Flex direction="column" justify="space-between" gap="xl">
+        <Box>
+          {title.entries.length > 0 &&
+            title.entries.map((entry, index) => (
+              <EntryCard key={entry.id} entry={entry} index={index} session={session} />
+            ))}
+        </Box>
+        <EntryInput titleId={title.id} />
+      </Flex>
     </>
   );
 }

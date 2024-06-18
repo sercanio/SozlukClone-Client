@@ -1,14 +1,27 @@
-.mantine-List-itemWrapper,
-.mantine-List-itemLabel {
+.mantine-List-itemWrapper .mantine-List-itemLabel {
     width: 100%;
+    padding: 0;
 }
 
 
 .mantine-List-itemLabel .mantine-Button-inner {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+    line-height: unset !important; 
 }
+
+.mantine-List-itemLabel .mantine-Button-inner .mantine-Button-label {
+    word-wrap: break-word;
+    text-align: left;
+    white-space: normal !important;
+    padding-right: 0.25rem;
+}
+
+.mantine-List-itemLabel .mantine-Button-inner .mantine-Button-section{
+    margin: auto .25rem;
+}
+
 
 .mantine-ScrollArea-thumb {
     background-color: light-dark(var(--mantine-color-dark-0), var(--mantine-color-dark-4)) !important;
