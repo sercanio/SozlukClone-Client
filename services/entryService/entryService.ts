@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-escape */
 import { Session } from 'next-auth';
 import BackendService from '@services/backendService/backendService';
+import DOMPurify from 'isomorphic-dompurify';
 import {
   EntriesGetAllResponse,
   EntriesGetByIdResponse,
@@ -65,19 +66,36 @@ export default class EntriesService {
     formattedContent = this.convertAsteriksBkz(formattedContent);
     formattedContent = this.convertLinks(formattedContent);
     formattedContent = this.lowercaseExceptLinks(formattedContent);
-    return formattedContent;
+    formattedContent = this.convertParagraphs(formattedContent);
+    return DOMPurify.sanitize(formattedContent);
   }
 
   private sanitizeText(text: string): string {
     return text.replace(/[^a-zA-Z0-9ığüşöçİĞÜŞÖÇ\s]/g, '');
   }
 
+  // private convertBkz(text: string): string {
+  //   const bkzRegex = /\(bkz: ([^)]+)\)/g;
+  //   return text.replace(bkzRegex, (match, p1) => {
+  //     const sanitizedPhrase = this.sanitizeText(p1);
+  //     const encodedPhrase = encodeURIComponent(sanitizedPhrase);
+  //     return `(bkz: <a href="/?baslik=${encodedPhrase}">${sanitizedPhrase}</a>)`;
+  //   });
+  // }
+
   private convertBkz(text: string): string {
-    const bkzRegex = /\(bkz: ([^)]+)\)/g;
+    const bkzRegex = /\(bkz: (#\d+|[^)]+)\)/g;
     return text.replace(bkzRegex, (match, p1) => {
-      const sanitizedPhrase = this.sanitizeText(p1);
-      const encodedPhrase = encodeURIComponent(sanitizedPhrase);
-      return `(bkz: <a href="http://localhost:3000/?baslik=${encodedPhrase}">${sanitizedPhrase}</a>)`;
+      if (p1.startsWith('#')) {
+        // Handle numeric bkz with #
+        const entryId = p1.slice(1); // Remove the # symbol
+        return `(bkz: <a href="/tanim/${entryId}" id="internallink">${p1}</a>)`;
+      } else {
+        // Handle normal bkz
+        const sanitizedPhrase = this.sanitizeText(p1);
+        const encodedPhrase = encodeURIComponent(sanitizedPhrase);
+        return `(bkz: <a href="/?baslik=${encodedPhrase}" id="internallink">${sanitizedPhrase}</a>)`;
+      }
     });
   }
 
@@ -86,7 +104,7 @@ export default class EntriesService {
     return text.replace(gbkzRegex, (match, p1) => {
       const sanitizedPhrase = this.sanitizeText(p1);
       const encodedPhrase = encodeURIComponent(sanitizedPhrase);
-      return `<a href="http://localhost:3000/?baslik=${encodedPhrase}">${sanitizedPhrase}</a>`;
+      return `<a href="/?baslik=${encodedPhrase}" id="internallink">${sanitizedPhrase}</a>`;
     });
   }
 
@@ -95,7 +113,7 @@ export default class EntriesService {
     return text.replace(asteriksBkzRegex, (match, p1) => {
       const sanitizedPhrase = this.sanitizeText(p1);
       const encodedPhrase = encodeURIComponent(sanitizedPhrase);
-      return `<a href="http://localhost:3000/?baslik=${encodedPhrase}" title='(bkz: ${sanitizedPhrase})'>*</a>`;
+      return `<a href="/?baslik=${encodedPhrase}" title='(bkz: ${sanitizedPhrase})' id="internallink">*</a>`;
     });
   }
 
@@ -107,7 +125,7 @@ export default class EntriesService {
         <p>
             ---
             <a
-              href="http://localhost:3000/?baslik=${encodeURIComponent(p1)}">
+              href="/?baslik=${encodeURIComponent(p1)}" id="internallink">
               spoiler
             </a>
             ---
@@ -154,5 +172,12 @@ export default class EntriesService {
     segments.push(text.slice(currentIndex).toLowerCase());
 
     return segments.join('');
+  }
+
+  private convertParagraphs(text: string): string {
+    return text
+      .split('\n\n')
+      .map(paragraph => `<p>${paragraph.trim()}</p>`)
+      .join('');
   }
 }

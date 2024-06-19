@@ -59,4 +59,12 @@ export const theme = createTheme({
     lg: '20px',
     xl: '25px',
   },
+  activeClassName: "",
+  components: {
+    Button: {
+      styles: {
+        root: { ":active": { transform: "none" }, },
+      },
+    },
+  }
 });

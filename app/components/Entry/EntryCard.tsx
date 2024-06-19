@@ -5,6 +5,9 @@ import React from 'react';
 import EntryFooter from './EntryFooter';
 import EntriesService from '@/services/entryService/entryService';
 import EntryHeader from './EntryHeader';
+import DOMPurify from 'dompurify';
+// import HTMLReactParser from 'html-react-parser';
+import parse, { domToReact } from 'html-react-parser';
 
 export function EntryCard({
   entry,
@@ -35,12 +38,25 @@ export function EntryCard({
             )}
             <EntryHeader entryId={entry.id} />
           </Flex>
-          <Box
+          {/* <Box
             flex={1}
             dangerouslySetInnerHTML={{
               __html: entriesService.formatEntryContent(entry.content),
             }}
-          />
+          /> */}
+          <Box>
+            {parse(entriesService.formatEntryContent(entry.content), {
+              replace({ attribs, children }) {
+                if (!attribs) {
+                  return;
+                }
+                if (attribs.id === 'internallink') {
+                  return <Link href={attribs.href}>{domToReact(children)}</Link>;
+                }
+
+              },
+            })}
+          </Box>
           <Text id="entry" flex={1}></Text>
           <Flex justify="flex-end">
             <EntryFooter entry={entry} />

@@ -18,7 +18,7 @@ function EntryHeader({ entryId }: { entryId: number }) {
             size="xs"
             fw="light"
             style={{ cursor: 'pointer' }}
-            onClick={() => copyToClipboard(entryId.toString())}
+            onClick={() => copyToClipboard(`#${entryId.toString()}`)}
         >
             #{entryId}
         </Text>
