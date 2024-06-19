@@ -14,7 +14,7 @@ function EntryPagination({ title, page, size }: { title: TitlesGetByIdResponse, 
 
     return (
         <Box style={{ maxWidth: "850px" }}>
-            <Pagination pos="relative" size="xs" ml="auto" mr="xl" my="xl" p="xl" right="xl" boundaries={1} value={page + 1} total={Math.ceil(title.entryCount / 10)} onChange={paginationChangeHandler} style={{ width: "fit-content" }} />
+            <Pagination pos="relative" size="xs" ml="auto" mr="xl" my="sm" p="sm" right="xl" boundaries={1} value={page + 1} total={Math.ceil(title.entryCount / 10)} onChange={paginationChangeHandler} style={{ width: "fit-content" }} />
         </Box>
     )
 }

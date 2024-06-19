@@ -33,7 +33,7 @@ export function EntryCard({
               </Text>
             )}
             <Text size="xs" fw="light">
-              <Link href={`/entry/${entry.id}`}>#{entry.id}</Link>
+              <Link href={`/tanim/${entry.id}`}>#{entry.id}</Link>
             </Text>
           </Flex>
           <Box

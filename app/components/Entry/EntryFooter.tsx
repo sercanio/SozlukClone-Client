@@ -9,15 +9,22 @@ import useNotificationStore from '@store/notificationStore';
 import useLoadingStore from '@store/loadingStore';
 import { EntryInTitle } from '@/types/DTOs/EntriesDTOs';
 import formatDate from '@/utils/FormatDate';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
   const session = useSession();
+  const router = useRouter();
+  const pathname = usePathname();
+
   const user = session.data?.user;
   const entriesService = new EntriesService(session.data!);
 
   const showNotification = useNotificationStore((state) => state.showNotification);
   const { showSpinnerOverlay, hideSpinnerOverlay } = useLoadingStore();
 
+  console.log(pathname);
+  
+  
   async function handleEntryDelete() {
     showSpinnerOverlay();
     try {
@@ -27,14 +34,15 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
         message: 'tanım başarıyla silindi',
         variant: 'success',
       });
-      window.location.reload();
+      const fallback = (entry?.title?.slug && `/baslik/${entry.title.slug}`) || pathname
+      router.push(fallback)
     } catch (err: any) {
       showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
     } finally {
       hideSpinnerOverlay();
     }
   }
-
+    
   return (
     <Flex direction="column" justify="flex-end" align="flex-end" gap="md">
       <Menu shadow="md" width={150}>
@@ -47,7 +55,7 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
           {user?.id === entry.author?.userId && (
             <Menu.Item onClick={handleEntryDelete}>sil</Menu.Item>
           )}
-          {user?.id === entry.author?.userId && <Menu.Item>güncelle</Menu.Item>}
+          {user?.id === entry.author?.userId && <Menu.Item><Link href={`/tanim/guncelle/${entry.id}`}>güncelle</Link></Menu.Item>}
           <Menu.Item>modlog</Menu.Item>
           <Menu.Item>şikayet</Menu.Item>
         </Menu.Dropdown>

@@ -1,4 +1,4 @@
-import { EntryAuthorInTitle } from './AuthorsDTOs';
+import { AuthorsGetByIdResponse, EntryAuthorInTitle } from './AuthorsDTOs';
 import { GetAllResponse } from './BaseDTOs';
 import { TitlesGetByIdResponse } from './TitlesDTOs';
 
@@ -7,7 +7,7 @@ export interface Entry {
   content: string;
   authorId: number;
   titleId: number;
-  title: TitlesGetByIdResponse
+  title: TitlesGetByIdResponse;
 }
 
 export interface EntriesGetAllResponse extends GetAllResponse<Entry> {}
@@ -25,3 +25,6 @@ export interface EntryInTitle extends Entry {
   updatedDate?: any;
   author: EntryAuthorInTitle;
 }
+
+export interface UpdateEntryByUserRequest extends Omit<Entry, 'title' | 'authorId'> {}
+export interface UpdateEntryByUserResponse extends Omit<Entry, 'title'>{}

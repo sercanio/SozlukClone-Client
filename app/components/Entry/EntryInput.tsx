@@ -1,22 +1,26 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { Box, Button, Flex, Group, Textarea } from '@mantine/core';
 import EntriesService from '@services/entryService/entryService';
 import useNotificationStore from '@store/notificationStore';
 import useLoadingStore from '@store/loadingStore';
-import { EntriesPostRequest } from '@/types/DTOs/EntriesDTOs';
+import { EntriesGetByIdResponse, EntriesPostRequest, Entry, UpdateEntryByUserRequest } from '@/types/DTOs/EntriesDTOs';
 import styles from './EntryInput.module.css';
 import TitlesService from '@/services/titlesService/titlesService';
 import { TitlesGetByIdResponse, TitlesPostRequest } from '@/types/DTOs/TitlesDTOs';
+import { revalidatePath } from 'next/cache';
 
 interface Props {
   titleId?: number;
   newTitle?: string | string[];
+  entry?: EntriesGetByIdResponse;
 }
 
-export default function EntryInput({ titleId, newTitle }: Props) {
+export default function EntryInput({ titleId, newTitle, entry }: Props) {
+  const router = useRouter();
   const [text, setText] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const session = useSession();
@@ -25,6 +29,10 @@ export default function EntryInput({ titleId, newTitle }: Props) {
   const { showSpinnerOverlay, hideSpinnerOverlay } = useLoadingStore();
 
   const hasSelection = (start: number, end: number) => start !== end;
+
+  useEffect(() => {
+    setText(entry?.content || '')
+  }, [])
 
   const wrapText = (prefix: string, suffix: string) => {
     const textarea = textareaRef.current;
@@ -124,9 +132,13 @@ export default function EntryInput({ titleId, newTitle }: Props) {
     );
   }
 
-  async function handleSubmit(event : React.FormEvent<HTMLFormElement>) {
-    // event.preventDefault();
-    isItNewTitle() ? await createNewTitle() : await addNewEntry(titleId);
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (entry?.id) {
+      await updateExistingEntry(entry.id);
+    } else {
+      isItNewTitle() ? await createNewTitle() : await addNewEntry(titleId);
+    }
   }
 
   function isItNewTitle() {
@@ -164,6 +176,28 @@ export default function EntryInput({ titleId, newTitle }: Props) {
       await entriesService.create(data);
     } catch (err: any) {
       showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
+    } finally {
+      hideSpinnerOverlay();
+    }
+  }
+
+  async function updateExistingEntry(entryId: number) {
+    showSpinnerOverlay();
+    const entriesService = new EntriesService(session.data!);
+    try {
+      const data: UpdateEntryByUserRequest = {
+        id: entryId,
+        content: text,
+        titleId: entry?.titleId as number,
+      };
+      revalidatePath(`/baslik/${entry?.title.slug}`, "page")
+      await entriesService.update(data);
+      router.push(`/tanim/${entry?.id}`)
+      showNotification({ title: 'Başarılı', message: 'Entry güncellendi.', variant: 'success' });
+    } catch (err: any) {
+      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
+      console.log(err);
+      
     } finally {
       hideSpinnerOverlay();
     }

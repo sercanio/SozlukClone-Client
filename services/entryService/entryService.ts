@@ -5,6 +5,8 @@ import {
   EntriesGetAllResponse,
   EntriesGetByIdResponse,
   EntriesPostRequest,
+  UpdateEntryByUserRequest,
+  UpdateEntryByUserResponse,
 } from '@/types/DTOs/EntriesDTOs';
 
 export default class EntriesService {
@@ -40,6 +42,14 @@ export default class EntriesService {
       'Entries',
       { ...data, content: data.content }
     );
+    return response;
+  }
+
+  public async update<UpdateEntryByUserResponse>(data: UpdateEntryByUserRequest): Promise<UpdateEntryByUserResponse> {
+    const response = await this.backendService.put<UpdateEntryByUserResponse, UpdateEntryByUserRequest>(
+      'Entries',
+      { ...data, content: data.content }
+    )
     return response;
   }
 
