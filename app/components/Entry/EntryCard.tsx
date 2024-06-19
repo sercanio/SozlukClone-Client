@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import EntryFooter from './EntryFooter';
 import EntriesService from '@/services/entryService/entryService';
+import EntryHeader from './EntryHeader';
 
 export function EntryCard({
   entry,
@@ -20,7 +21,7 @@ export function EntryCard({
 
   return (
     <Box p="xl" my="xl">
-      <Paper shadow="none" key={index}>
+      <Paper w={800} shadow="none" key={index}>
         <Flex direction="column" justify="flex-start" gap="sm">
           <Flex justify="space-between" gap="sm" pr="md">
             {entry.title ? (
@@ -32,9 +33,7 @@ export function EntryCard({
                 {index + 1}
               </Text>
             )}
-            <Text size="xs" fw="light">
-              <Link href={`/tanim/${entry.id}`}>#{entry.id}</Link>
-            </Text>
+            <EntryHeader entryId={entry.id} />
           </Flex>
           <Box
             flex={1}

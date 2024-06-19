@@ -8,15 +8,20 @@ ul {
     padding: .5rem;
 }
 
-.element-UnstyledButton-root {
+.mantine-UnstyledButton-root {
     opacity: .8;
 }
 
-.element-UnstyledButton-root:hover {
+.mantine-UnstyledButton-root:hover {
     opacity: 1;
 }
 
 div h2 a {
     color: unset;
     text-decoration: none;
+}
+
+a{
+    text-decoration: none;
+    font-weight: 500;
 }

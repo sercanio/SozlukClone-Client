@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useLeftFrameTrigger } from '@/store/triggerStore';
 import { Box, Button, Flex, Menu, Text } from '@mantine/core';
 import EntriesService from '@services/entryService/entryService';
 import useNotificationStore from '@store/notificationStore';
@@ -19,12 +20,13 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
   const user = session.data?.user;
   const entriesService = new EntriesService(session.data!);
 
+  const setLeftFrameTrigger = useLeftFrameTrigger((state) => state.setTrigger);
   const showNotification = useNotificationStore((state) => state.showNotification);
   const { showSpinnerOverlay, hideSpinnerOverlay } = useLoadingStore();
 
   console.log(pathname);
-  
-  
+
+
   async function handleEntryDelete() {
     showSpinnerOverlay();
     try {
@@ -34,15 +36,15 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
         message: 'tanım başarıyla silindi',
         variant: 'success',
       });
-      const fallback = (entry?.title?.slug && `/baslik/${entry.title.slug}`) || pathname
-      router.push(fallback)
+      router.refresh()
+      setLeftFrameTrigger();
     } catch (err: any) {
       showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
     } finally {
       hideSpinnerOverlay();
     }
   }
-    
+
   return (
     <Flex direction="column" justify="flex-end" align="flex-end" gap="md">
       <Menu shadow="md" width={150}>
@@ -63,12 +65,14 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
       <Flex gap="md" style={{ width: 'fit-content' }}>
         <Flex direction="column" justify="center" align="flex-end" gap="sm">
           <Link href={`/biri/${entry.author?.userName}`}>
-            <Text ta="right">{entry.author?.userName}</Text>
+            <Text ta="right" fw={500}>{entry.author?.userName}</Text>
           </Link>
-          <Text ta="right" size="xs">
-            {formatDate(entry.createdDate)}
-            {entry.updatedDate && `- ${formatDate(entry?.updatedDate)}`}
-          </Text>
+          <Link href={`/tanim/${entry.id}`} style={{ color: 'unset' }}>
+            <Text ta="right" size="xs">
+              {formatDate(entry.createdDate)}
+              {entry.updatedDate && `- ${formatDate(entry?.updatedDate)}`}
+            </Text>
+          </Link>
         </Flex>
         <Box
           pos="relative"
@@ -76,12 +80,14 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
           h={52}
           style={{ zIndex: '0', borderRadius: '100%', overflow: 'hidden' }}
         >
-          <Image
-            src={entry.author?.profilePictureUrl || '/assets/default/images/user/profile.jpg'}
-            fill
-            objectFit="cover"
-            alt={`${entry.author?.userName} profil fotografı`}
-          />
+          <Link href={`/biri/${entry.author?.userName}`}>
+            <Image
+              src={entry.author?.profilePictureUrl || '/assets/default/images/user/profile.jpg'}
+              fill
+              objectFit="cover"
+              alt={`${entry.author?.userName} profil fotografı`}
+            />
+          </Link>
         </Box>
       </Flex>
     </Flex>

@@ -1,6 +1,6 @@
 import { Metadata, ResolvingMetadata } from 'next/types';
 import { getServerSession, Session } from 'next-auth';
-import { Box, Flex, Text } from '@mantine/core';
+import { Flex, Text } from '@mantine/core';
 import GlobalSettingsService from '@services/globalSettingsService/globalSettingsService';
 import { options } from './api/auth/[...nextauth]/options';
 import EntryInput from './components/Entry/EntryInput';

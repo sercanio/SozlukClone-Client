@@ -3,15 +3,15 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useLeftFrameTrigger } from '@/store/triggerStore';
 import { Box, Button, Flex, Group, Textarea } from '@mantine/core';
 import EntriesService from '@services/entryService/entryService';
 import useNotificationStore from '@store/notificationStore';
 import useLoadingStore from '@store/loadingStore';
 import { EntriesGetByIdResponse, EntriesPostRequest, Entry, UpdateEntryByUserRequest } from '@/types/DTOs/EntriesDTOs';
-import styles from './EntryInput.module.css';
 import TitlesService from '@/services/titlesService/titlesService';
 import { TitlesGetByIdResponse, TitlesPostRequest } from '@/types/DTOs/TitlesDTOs';
-import { revalidatePath } from 'next/cache';
+import styles from './EntryInput.module.css';
 
 interface Props {
   titleId?: number;
@@ -25,6 +25,7 @@ export default function EntryInput({ titleId, newTitle, entry }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const session = useSession();
 
+  const setLeftFrameTrigger = useLeftFrameTrigger((state) => state.setTrigger);
   const showNotification = useNotificationStore((state) => state.showNotification);
   const { showSpinnerOverlay, hideSpinnerOverlay } = useLoadingStore();
 
@@ -173,7 +174,10 @@ export default function EntryInput({ titleId, newTitle, entry }: Props) {
         titleId: id as number,
         authorId: session.data!.user.authorId,
       };
-      await entriesService.create(data);
+      const createdEntry: EntriesGetByIdResponse = await entriesService.create(data);
+      router.push(`/tanim/${createdEntry?.id}`);
+      router.refresh();
+      setLeftFrameTrigger();
     } catch (err: any) {
       showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
     } finally {
@@ -190,14 +194,14 @@ export default function EntryInput({ titleId, newTitle, entry }: Props) {
         content: text,
         titleId: entry?.titleId as number,
       };
-      revalidatePath(`/baslik/${entry?.title.slug}`, "page")
       await entriesService.update(data);
-      router.push(`/tanim/${entry?.id}`)
+      router.push(`/tanim/${entry?.id}`);
+      router.refresh();
       showNotification({ title: 'Başarılı', message: 'Entry güncellendi.', variant: 'success' });
     } catch (err: any) {
       showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
       console.log(err);
-      
+
     } finally {
       hideSpinnerOverlay();
     }

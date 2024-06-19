@@ -7,7 +7,6 @@ import EntryInput from '@components/Entry/EntryInput';
 import { AuthorsGetByIdResponse } from '@/types/DTOs/AuthorsDTOs';
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import { TitlesGetByIdResponse } from '@/types/DTOs/TitlesDTOs';
-import './override.css';
 import EntryCard from '@/app/components/Entry/EntryCard';
 import EntryPagination from '@/app/components/Entry/EntryPagination';
 

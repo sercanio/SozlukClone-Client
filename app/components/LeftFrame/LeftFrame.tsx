@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import { Button, Box, List, ScrollArea, Text, LoadingOverlay, Pagination, Flex } from '@mantine/core';
 import { Title, TitlesGetAllResponse } from '@/types/DTOs/TitlesDTOs';
 import TitlesService from '@/services/titlesService/titlesService';
+import { useLeftFrameTrigger } from '@/store/triggerStore';
 import './override.css';
 
 export function LeftFrame() {
@@ -14,10 +15,11 @@ export function LeftFrame() {
   const [titles, setTitles] = useState<TitlesGetAllResponse>();
   const [page, setPage] = useState<number>(0)
   const [isComponentLoading, setIsComponentLoading] = useState<boolean>(true);
+  const { trigger } = useLeftFrameTrigger();
 
   useEffect(() => {
     getLatestTitles(page, 20)
-  }, [page])
+  }, [page, trigger])
 
   async function getLatestTitles(pageIndex: number, pageSize: number) {
     setIsComponentLoading(true);
