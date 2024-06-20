@@ -32,6 +32,14 @@ export default class EntriesService {
     );
   }
 
+  public async getAllByAuthorId(
+    pageIndex: number,
+    pageSize: number,
+    authorId: number,
+  ): Promise<EntriesGetAllResponse>{
+    return this.backendService.get<EntriesGetAllResponse>(`Entries/GetListByAuthorId?PageIndex=${pageIndex}&PageSize=${pageSize}&authorId=${authorId}`)
+  }
+
   public async getById(id: number): Promise<EntriesGetByIdResponse> {
     return this.backendService.get<EntriesGetByIdResponse>(`Entries/${id}`);
   }
@@ -59,29 +67,22 @@ export default class EntriesService {
   }
 
   public formatEntryContent(content: string): string {
-    let formattedContent = content;
-    formattedContent = this.convertBkz(formattedContent);
-    formattedContent = this.convertGbkz(formattedContent);
-    formattedContent = this.convertSpoilers(formattedContent);
-    formattedContent = this.convertAsteriksBkz(formattedContent);
-    formattedContent = this.convertLinks(formattedContent);
-    formattedContent = this.lowercaseExceptLinks(formattedContent);
-    formattedContent = this.convertParagraphs(formattedContent);
-    return DOMPurify.sanitize(formattedContent);
+    let sanitizedContent = DOMPurify.sanitize(content, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+
+    sanitizedContent = this.convertBkz(sanitizedContent);
+    sanitizedContent = this.convertGbkz(sanitizedContent);
+    sanitizedContent = this.convertSpoilers(sanitizedContent);
+    sanitizedContent = this.convertAsteriksBkz(sanitizedContent);
+    sanitizedContent = this.convertLinks(sanitizedContent);
+    sanitizedContent = this.convertImageLinks(sanitizedContent);
+    sanitizedContent = this.lowercaseExceptLinks(sanitizedContent);
+    sanitizedContent = this.convertParagraphs(sanitizedContent);
+    return DOMPurify.sanitize(sanitizedContent);
   }
 
   private sanitizeText(text: string): string {
     return text.replace(/[^a-zA-Z0-9ığüşöçİĞÜŞÖÇ\s]/g, '');
   }
-
-  // private convertBkz(text: string): string {
-  //   const bkzRegex = /\(bkz: ([^)]+)\)/g;
-  //   return text.replace(bkzRegex, (match, p1) => {
-  //     const sanitizedPhrase = this.sanitizeText(p1);
-  //     const encodedPhrase = encodeURIComponent(sanitizedPhrase);
-  //     return `(bkz: <a href="/?baslik=${encodedPhrase}">${sanitizedPhrase}</a>)`;
-  //   });
-  // }
 
   private convertBkz(text: string): string {
     const bkzRegex = /\(bkz: (#\d+|[^)]+)\)/g;
@@ -150,6 +151,18 @@ export default class EntriesService {
         </a>`
     );
   }
+
+  private convertImageLinks(text: string): string {
+    const imageLinkRegex = /\[img: (https?:\/\/[^\s]+)\]/g;
+    return text.replace(
+      imageLinkRegex,
+      (match, p1) => `
+        <a href="${p1}" target="_blank" rel="noopener noreferrer" title="orijinal boyutta gör">
+          <img src="${p1}" alt="yazar tarafından eklenmiş görsel" class="entry-img" onerror="this.onerror=null;this.src='https://placeimg.com/200/300/animals';" />
+        </a>`
+    );
+  }
+  
 
   private lowercaseExceptLinks(text: string): string {
     const linkRegex = /\[(https?:\/\/[^\s]+)\s([^\]]+)\]/g;

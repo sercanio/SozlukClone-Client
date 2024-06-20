@@ -29,8 +29,8 @@ export function LeftFrame() {
   }
 
   return (
-    <Box p="none" h="100%" >
-      <ScrollArea pos="fixed" top="109px" bottom={0} w={300} scrollbars="y" type="auto" scrollbarSize={10} offsetScrollbars style={{ height: "calc(100% - 130px)" }} >
+    <Box h="100%" w={{ base: "100%", md: 300 }}>
+      <ScrollArea pos="fixed" top="109px" bottom={0} scrollbars="y" type="auto" scrollbarSize={10} offsetScrollbars style={{ height: "calc(100% - 130px)" }} >
         <Text component="h2" size="xl" mb="lg">
           son başlıklar
         </Text >

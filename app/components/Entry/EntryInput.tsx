@@ -84,12 +84,12 @@ export default function EntryInput({ titleId, newTitle, entry }: Props) {
 
     if (!hasSelection(selectionStart, selectionEnd)) {
       // eslint-disable-next-line no-alert
-      alert('Please select some text to convert to a URL.');
+      alert("metin kutusuna girdiğiniz URL'i seçin");
       return;
     }
 
     // eslint-disable-next-line no-alert
-    const userUrl = window.prompt('URL Girin', 'http://');
+    const userUrl = window.prompt('URL girin', 'http://');
 
     if (!userUrl) return;
 
@@ -104,6 +104,33 @@ export default function EntryInput({ titleId, newTitle, entry }: Props) {
 
     const urlLength = `[${userUrl}](${userUrl})`.length;
     const newSelectionStart = selectionStart + urlLength;
+    const newSelectionEnd = newSelectionStart + selectedText.length;
+    setTimeout(() => {
+      textarea.setSelectionRange(newSelectionStart, newSelectionEnd);
+      textarea.focus();
+    }, 0);
+  };
+
+  const wrapImageLink = () => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const { selectionStart, selectionEnd } = textarea;
+
+    if (!hasSelection(selectionStart, selectionEnd)) {
+      // eslint-disable-next-line no-alert
+      alert("metin kutusuna girdiğiniz görsel linkini seçin.");
+      return;
+    }
+
+    const before = text.substring(0, selectionStart);
+    const after = text.substring(selectionEnd, text.length);
+    const selectedText = text.substring(selectionStart, selectionEnd);
+
+    const newText = before + `[img: ${selectedText}]` + after;
+    setText(newText);
+
+    const newSelectionStart = selectionStart + '[img: '.length;
     const newSelectionEnd = newSelectionStart + selectedText.length;
     setTimeout(() => {
       textarea.setSelectionRange(newSelectionStart, newSelectionEnd);
@@ -128,6 +155,9 @@ export default function EntryInput({ titleId, newTitle, entry }: Props) {
         </Button>
         <Button variant="outline" px="sm" py="none" onClick={convertUrl}>
           http://
+        </Button>
+        <Button variant="outline" px="sm" py="none" onClick={wrapImageLink}>
+          görsel
         </Button>
       </Flex>
     );
@@ -158,7 +188,7 @@ export default function EntryInput({ titleId, newTitle, entry }: Props) {
       await addNewEntry(response.id);
       return response.id;
     } catch (err: any) {
-      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
+      showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
       return null;
     } finally {
       hideSpinnerOverlay();
@@ -177,9 +207,10 @@ export default function EntryInput({ titleId, newTitle, entry }: Props) {
       const createdEntry: EntriesGetByIdResponse = await entriesService.create(data);
       router.push(`/tanim/${createdEntry?.id}`);
       router.refresh();
+      showNotification({ title: 'başarılı', message: "tanım eklendi", variant: 'success' });
       setLeftFrameTrigger();
     } catch (err: any) {
-      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
+      showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
     } finally {
       hideSpinnerOverlay();
     }
@@ -197,9 +228,9 @@ export default function EntryInput({ titleId, newTitle, entry }: Props) {
       await entriesService.update(data);
       router.push(`/tanim/${entry?.id}`);
       router.refresh();
-      showNotification({ title: 'Başarılı', message: 'Entry güncellendi.', variant: 'success' });
+      showNotification({ title: 'başarılı', message: 'tanım güncellendi.', variant: 'success' });
     } catch (err: any) {
-      showNotification({ title: 'Başarısız', message: err.message, variant: 'error' });
+      showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
       console.log(err);
 
     } finally {

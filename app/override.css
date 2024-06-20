@@ -25,3 +25,10 @@ a{
     text-decoration: none;
     font-weight: 500;
 }
+
+.entry-img{
+    width: 96%;
+    max-width: 450px;
+    padding: 0.25rem;
+    height: auto;
+}

@@ -22,10 +22,13 @@ export interface AuthorsGetByIdResponse extends Author {
     email: string;
     status: boolean;
   };
-  titles: any[]; // Adjust this type accordingly if there are specific title types
+  titleCount: number;
+  entryCount: number;
+  followersCount: number;
+  followeesCount: number;
 }
 
-export interface AuthorsUpdateRequest extends Author {}
+export type AuthorsUpdateRequest = Omit<Author, 'userName' | 'profilePictureUrl' | 'coverPictureUrl' | 'age' | 'gender'> & Partial<Pick<Author, 'userName' | 'profilePictureUrl' | 'coverPictureUrl' | 'age' | 'gender'>>;
 
 export interface AuthorsUpdateResponse extends Author {}
 
@@ -46,8 +49,7 @@ export type AuthorsSearchByUserNameItem = Pick<Author, 'id' | 'userId' | 'userNa
   email: string;
 };
 
-export interface AuthorsSearchByUserNameResponse
-  extends GetAllResponse<AuthorsSearchByUserNameItem> {}
+export interface AuthorsSearchByUserNameResponse extends GetAllResponse<AuthorsSearchByUserNameItem> {}
 
 export interface EntryAuthorInTitle {
   id: number;
@@ -56,4 +58,3 @@ export interface EntryAuthorInTitle {
   profilePictureUrl: string;
   authorGroupId: number;
 }
-

@@ -47,14 +47,14 @@ export default async function Page({ params, searchParams }: Props) {
         {title.name}
       </Text>
       <Flex pos="relative" direction="column" justify="space-between" gap="xl">
-        <Box w="100%" >
+        <>
           <EntryPagination title={title} page={pageParam} size={sizeParam} />
           {title.entries.length > 0 &&
             title.entries.map((entry, index) => (
               <EntryCard key={entry.id} entry={entry} index={pageParam * sizeParam + index} session={session} />
             ))}
           <EntryPagination title={title} page={pageParam} size={sizeParam} />
-        </Box>
+        </>
         <EntryInput titleId={title.id} />
       </Flex>
     </>
