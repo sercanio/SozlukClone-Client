@@ -13,6 +13,12 @@ export default withBundleAnalyzer({
     optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
   },
   images: {
-    domains: ['res.cloudinary.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '**',
+      },
+    ],
   },
 });

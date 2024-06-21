@@ -1,4 +1,5 @@
 import { GetAllResponse } from './BaseDTOs';
+import { RelationsCreateResponse } from './RelationsDtos';
 
 export interface Author {
   id: number;
@@ -24,8 +25,8 @@ export interface AuthorsGetByIdResponse extends Author {
   };
   titleCount: number;
   entryCount: number;
-  followersCount: number;
-  followeesCount: number;
+  followers : RelationsCreateResponse[];
+  followings: RelationsCreateResponse[];
 }
 
 export type AuthorsUpdateRequest = Omit<Author, 'userName' | 'profilePictureUrl' | 'coverPictureUrl' | 'age' | 'gender'> & Partial<Pick<Author, 'userName' | 'profilePictureUrl' | 'coverPictureUrl' | 'age' | 'gender'>>;
