@@ -1,5 +1,6 @@
-import { AuthorsGetByIdResponse, EntryAuthorInTitle } from './AuthorsDTOs';
+import { EntryAuthorInTitle } from './AuthorsDTOs';
 import { GetAllResponse } from './BaseDTOs';
+import { Rating, RatingsCreateRequest, RatingsCreateResponse } from './RatingsDTOs';
 import { TitlesGetByIdResponse } from './TitlesDTOs';
 
 export interface Entry {
@@ -8,6 +9,9 @@ export interface Entry {
   authorId: number;
   titleId: number;
   title: TitlesGetByIdResponse;
+  likes: Rating[];
+  dislikes: Rating[];
+  favorites: Rating[];
 }
 
 export interface EntriesGetAllResponse extends GetAllResponse<Entry> {}

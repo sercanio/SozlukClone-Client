@@ -1,16 +1,19 @@
 export type TApiError = {
-  status: number;
-  statusText: string;
-  message: string;
+  detail: string;
+  status: string;
+  title: string;
+  type: string;
 };
 
 export class ApiError extends Error {
   status: number;
-  statusText: string;
+  title: string;
+  type: string;
 
-  constructor(message: string, status: number, statusText: string) {
-    super(message);
+  constructor(detail: string, status: number, title: string, type: string) {
+    super(detail);
     this.status = status;
-    this.statusText = statusText;
+    this.title = title;
+    this.type = type;
   }
 }

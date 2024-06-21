@@ -36,8 +36,16 @@ export default class EntriesService {
     pageIndex: number,
     pageSize: number,
     authorId: number,
-  ): Promise<EntriesGetAllResponse>{
+  ): Promise<EntriesGetAllResponse> {
     return this.backendService.get<EntriesGetAllResponse>(`Entries/GetListByAuthorId?PageIndex=${pageIndex}&PageSize=${pageSize}&authorId=${authorId}`)
+  }
+
+  public async getMostLikedAllByAuthorId(
+    pageIndex: number,
+    pageSize: number,
+    authorId: number,
+  ): Promise<EntriesGetAllResponse> {
+    return this.backendService.get<EntriesGetAllResponse>(`Entries/GetTopLikedListByAuthorId?PageIndex=${pageIndex}&PageSize=${pageSize}&authorId=${authorId}`)
   }
 
   public async getById(id: number): Promise<EntriesGetByIdResponse> {
@@ -162,7 +170,7 @@ export default class EntriesService {
         </a>`
     );
   }
-  
+
 
   private lowercaseExceptLinks(text: string): string {
     const linkRegex = /\[(https?:\/\/[^\s]+)\s([^\]]+)\]/g;
@@ -192,5 +200,17 @@ export default class EntriesService {
       .split('\n\n')
       .map(paragraph => `<p>${paragraph.trim()}</p>`)
       .join('');
+  }
+
+  async getTopLikedByAuthorId(page: number, pageSize: number, authorId: number) {
+    // Fetch entries sorted by likes
+  }
+
+  async getTopFavoritedByAuthorId(page: number, pageSize: number, authorId: number) {
+    // Fetch entries sorted by favorites
+  }
+
+  async getFavoritesByAuthorId(page: number, pageSize: number, authorId: number) {
+    // Fetch favorited entries by the author
   }
 }

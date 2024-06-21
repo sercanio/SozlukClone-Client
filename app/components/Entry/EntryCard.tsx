@@ -2,7 +2,6 @@ import { Box, Paper, Flex, Text } from '@mantine/core';
 import { Session } from 'next-auth';
 import Link from 'next/link';
 import React from 'react';
-import Image from 'next/image';
 import EntryFooter from './EntryFooter';
 import EntriesService from '@/services/entryService/entryService';
 import EntryHeader from './EntryHeader';
@@ -36,7 +35,7 @@ export function EntryCard({
       }
     },
   }
-
+  
   return (
     <Box p="xl" my="xl">
       <Paper w={800} shadow="none" key={index}>
@@ -53,13 +52,10 @@ export function EntryCard({
             )}
             <EntryHeader entryId={entry.id} />
           </Flex>
-          <Box>
+          <Box mb="md">
             {parse(entriesService.formatEntryContent(entry.content), htmlParserOptions)}
           </Box>
-          <Text id="entry" flex={1}></Text>
-          <Flex justify="flex-end">
-            <EntryFooter entry={entry} />
-          </Flex>
+          <EntryFooter entry={entry} />
         </Flex>
       </Paper>
     </Box>

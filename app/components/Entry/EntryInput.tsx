@@ -206,12 +206,12 @@ export default function EntryInput({ titleId, newTitle, entry }: Props) {
       };
       const createdEntry: EntriesGetByIdResponse = await entriesService.create(data);
       router.push(`/tanim/${createdEntry?.id}`);
-      router.refresh();
       showNotification({ title: 'başarılı', message: "tanım eklendi", variant: 'success' });
       setLeftFrameTrigger();
     } catch (err: any) {
       showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
     } finally {
+      router.refresh();
       hideSpinnerOverlay();
     }
   }
@@ -220,7 +220,7 @@ export default function EntryInput({ titleId, newTitle, entry }: Props) {
     showSpinnerOverlay();
     const entriesService = new EntriesService(session.data!);
     try {
-      const data: UpdateEntryByUserRequest = {
+      const data: any = {
         id: entryId,
         content: text,
         titleId: entry?.titleId as number,
@@ -232,7 +232,7 @@ export default function EntryInput({ titleId, newTitle, entry }: Props) {
     } catch (err: any) {
       showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
       console.log(err);
-
+      
     } finally {
       hideSpinnerOverlay();
     }

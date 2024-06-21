@@ -13,6 +13,7 @@ export default class BackendService {
       timeout: Number(process.env.NEXT_PUBLIC_AXIOS_TIMEOUT) || 10000,
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'tr'
       },
       withCredentials: true,
     };
@@ -77,11 +78,14 @@ export default class BackendService {
 
   private handleError(error: any): ApiError {
     if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data?.message || error.message;
-      const status = error.response?.status || 500;
-      const statusText = error.response?.statusText || 'Internal Server Error';
-      return new ApiError(errorMessage, status, statusText);
+      const detail = error.response?.data?.detail || 'Something went wrong';
+      const status = error.response?.data?.status || 500;
+      const title = error.response?.data?.title || 'Internal Server Error';
+      const type = error.response?.data?.type || ""
+      console.log(error);
+
+      return new ApiError(detail, status, title, type);
     }
-    return new ApiError(error.message, 500, 'Internal Server Error');
+    return new ApiError('Something went wrong', 500, 'Internal Server Error', "https://example.com");
   }
 }

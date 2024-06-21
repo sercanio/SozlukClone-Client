@@ -58,9 +58,15 @@ function FollowingOperation({ authorId, followings }: Props) {
         showSpinnerOverlay();
         const relation = followings.filter(relation => (relation.followingId === authorId) && (relation.followerId === session.data?.user.authorId))[0];
 
-        relationsService.delete(`${relation.id}`).then(() => {
-            router.refresh();
-            showNotification({ title: 'başarılı', message: "yazar takipten çıkarıldı", variant: 'success' });
+        relationsService.delete(`${relation.id}`).then((val: any) => {
+            if (val.id) {
+                router.refresh();
+                showNotification({ title: 'başarılı', message: "yazar takipten çıkarıldı", variant: 'success' });
+                followings.filter(relatione => relation.id !== val.id);
+                setIsFollowing(false);
+            } else {
+                throw new Error("bir seyler ters gitti.")
+            }
         }).catch(err => {
             showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
         }).finally(() => {
