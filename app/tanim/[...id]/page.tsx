@@ -12,28 +12,29 @@ type Props = {
     params: { id: string; session: Session; slug: string; }
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata | null> {
     const session = await getServerSession(options);
-    params.session = session!;
     const entriesService = new EntriesService(session!);
+    const id = Number(params.id);
 
-    const entry: EntriesGetByIdResponse = await entriesService.getById(+params.id);
+    const entry: EntriesGetByIdResponse = await entriesService.getById(id);
 
     return {
         title: `${entry.title.name}`,
     };
 }
 
-async function Page({ params }: Props) {
-
-    const { session, slug } = params
+async function Page({ params }: Props) {    
+    const id = Number(params.id);
+    
+    const session = await getServerSession(options);
     const entriesService = new EntriesService(session!);
 
-    const entry: EntriesGetByIdResponse = await entriesService.getById(+params.id);
+    const entry: EntriesGetByIdResponse = await entriesService.getById(id);
 
     return (
         <Flex direction="column" justify="space-between" gap="xl">
-            <EntryCard entry={entry} index={0} session={session} singleEntry={true} />
+            <EntryCard entry={entry} index={0} session={session!} singleEntry={true} />
             <EntryInput titleId={entry.title.id} />
         </Flex>
     )

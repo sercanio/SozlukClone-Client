@@ -30,8 +30,6 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
   const liked = entry.authorLike;
   const disliked = entry.authorDislike;
   const favorited = entry.authorFavorite;
-
-  console.log(entry);
   
   async function handleEntryDelete() {
     showSpinnerOverlay();
@@ -51,98 +49,98 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
     }
   }
 
-  // async function handleLike() {
-  //   showSpinnerOverlay();
-  //   try {
-  //     if (dislike) {
-  //       await ratingsService.deleteDislike(`${dislike.id}`);
-  //     }
+  async function handleLike() {
+    showSpinnerOverlay();
+    try {
+      if (disliked) {
+        await ratingsService.deleteDislike(`${entry.dislikeId}`);
+      }
 
-  //     if (like) {
-  //       await ratingsService.deleteLike(`${like.id}`);
-  //       showNotification({ title: 'başarılı', message: 'tanım beğenisi kaldırıldı', variant: 'success' });
-  //     } else {
-  //       const likeData: RatingsCreateRequest = {
-  //         entryId: entry.id,
-  //         authorId: user?.authorId as number,
-  //       };
-  //       await ratingsService.createLike(likeData);
-  //       showNotification({ title: 'başarılı', message: 'tanım beğenildi', variant: 'success' });
-  //     }
+      if (liked) {
+        await ratingsService.deleteLike(`${entry.likeId}`);
+        showNotification({ title: 'başarılı', message: 'tanım beğenisi kaldırıldı', variant: 'success' });
+      } else {
+        const likeData: RatingsCreateRequest = {
+          entryId: entry.id,
+          authorId: user?.authorId as number,
+        };
+        await ratingsService.createLike(likeData);
+        showNotification({ title: 'başarılı', message: 'tanım beğenildi', variant: 'success' });
+      }
 
-  //   } catch (err: any) {
-  //     showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
-  //   } finally {
-  //     router.refresh();
-  //     hideSpinnerOverlay();
-  //   }
-  // }
+    } catch (err: any) {
+      showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
+    } finally {
+      router.refresh();
+      hideSpinnerOverlay();
+    }
+  }
 
-  // async function handleDislike() {
-  //   showSpinnerOverlay();
-  //   try {
-  //     if (like) {
-  //       await ratingsService.deleteLike(`${like.id}`);
-  //     }
+  async function handleDislike() {
+    showSpinnerOverlay();
+    try {
+      if (liked) {
+        await ratingsService.deleteLike(`${entry.likeId}`);
+      }
 
-  //     if (favorite) {
-  //       await ratingsService.deleteFavorite(`${favorite.id}`)
-  //     }
+      if (favorited) {
+        await ratingsService.deleteFavorite(`${entry.favoriteId}`)
+      }
 
-  //     if (dislike) {
-  //       await ratingsService.deleteDislike(`${dislike.id}`);
-  //       showNotification({ title: 'başarılı', message: 'tanıma eksi oyu kaldırıldı', variant: 'success' });
-  //     } else {
-  //       const dislikeData: RatingsCreateRequest = {
-  //         entryId: entry.id,
-  //         authorId: user?.authorId as number,
-  //       };
-  //       await ratingsService.createDislike(dislikeData);
-  //       showNotification({ title: 'başarılı', message: 'tanıma eksi oy verildi', variant: 'success' });
-  //     }
+      if (disliked) {
+        await ratingsService.deleteDislike(`${entry.dislikeId}`);
+        showNotification({ title: 'başarılı', message: 'tanıma eksi oyu kaldırıldı', variant: 'success' });
+      } else {
+        const dislikeData: RatingsCreateRequest = {
+          entryId: entry.id,
+          authorId: user?.authorId as number,
+        };
+        await ratingsService.createDislike(dislikeData);
+        showNotification({ title: 'başarılı', message: 'tanıma eksi oy verildi', variant: 'success' });
+      }
 
-  //   } catch (err: any) {
-  //     showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
-  //   } finally {
-  //     router.refresh();
-  //     hideSpinnerOverlay();
-  //   }
-  // }
+    } catch (err: any) {
+      showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
+    } finally {
+      router.refresh();
+      hideSpinnerOverlay();
+    }
+  }
 
-  // async function handleFavorite() {
-  //   showSpinnerOverlay();
-  //   try {
-  //     if (dislike) {
-  //       await ratingsService.deleteDislike(`${dislike.id}`);
-  //     }
+  async function handleFavorite() {
+    showSpinnerOverlay();
+    try {
+      if (disliked) {
+        await ratingsService.deleteDislike(`${entry.dislikeId}`);
+      }
 
 
-  //     if (favorite) {
-  //       await ratingsService.deleteFavorite(`${favorite.id}`);
-  //       showNotification({ title: 'başarılı', message: 'tanım favorilerden kalıdırıldı', variant: 'success' });
-  //     } else {
-  //       const favoriteData: RatingsCreateRequest = {
-  //         entryId: entry.id,
-  //         authorId: user?.authorId as number,
-  //       };
-  //       await ratingsService.createFavorite(favoriteData);
-  //       showNotification({ title: 'başarılı', message: 'tanım favorilere eklendi', variant: 'success' });
-  //     }
+      if (favorited) {
+        await ratingsService.deleteFavorite(`${entry.favoriteId}`);
+        showNotification({ title: 'başarılı', message: 'tanım favorilerden kalıdırıldı', variant: 'success' });
+      } else {
+        const favoriteData: RatingsCreateRequest = {
+          entryId: entry.id,
+          authorId: user?.authorId as number,
+        };
+        await ratingsService.createFavorite(favoriteData);
+        showNotification({ title: 'başarılı', message: 'tanım favorilere eklendi', variant: 'success' });
+      }
 
-  //   } catch (err: any) {
-  //     showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
-  //   } finally {
-  //     router.refresh();
-  //     hideSpinnerOverlay();
-  //   }
-  // }
-  
+    } catch (err: any) {
+      showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
+    } finally {
+      router.refresh();
+      hideSpinnerOverlay();
+    }
+  }
+
   return (
     <Flex direction="column" justify="flex-end" align="flex-end" gap="md">
       <Flex gap="sm" justify="space-between" w="100%">
         <Flex flex={1} gap="xl">
           <Flex gap="xs" align="center">
-            <Button variant='transparent' p="none">
+            <Button variant='transparent' p="none" onClick={handleLike}>
               {
                 liked ?
                   <IconSquareArrowUpFilled stroke={0.5} /> : <IconSquareArrowUp stroke={0.5} />
@@ -151,7 +149,7 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
             <Text>{entry.likesCount}</Text>
           </Flex>
           <Flex gap="xs" align="center">
-            <Button variant='transparent' p="none">
+            <Button variant='transparent' p="none" onClick={handleDislike}>
               {
                 disliked ?
                   <IconSquareArrowDownFilled stroke={0.5} /> : <IconSquareArrowDown stroke={0.5} />
@@ -160,7 +158,7 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
             <Text>{entry.dislikesCount}</Text>
           </Flex>
           <Flex gap="xs" align="center">
-            <Button variant='transparent' p="none">
+            <Button variant='transparent' p="none" onClick={handleFavorite}>
               {
                 favorited ?
                   <IconHeartFilled stroke={0.5} /> : <IconHeart stroke={0.5} />
@@ -207,8 +205,8 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
             <Image
               src={'/assets/default/images/user/profile.jpg'}
               fill
-              objectFit="cover"
               alt={`${entry.author?.userName} profil fotografı`}
+              style={{ objectFit: 'cover' }}
             />
           </Link>
         </Box>

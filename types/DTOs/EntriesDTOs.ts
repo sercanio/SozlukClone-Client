@@ -27,6 +27,9 @@ export interface Entry {
 	authorLike: boolean;
 	authorDislike: boolean;
 	authorFavorite: boolean;
+	likeId: string;
+	dislikeId: string;
+	favoriteId: string;
 	title: Title;
 	author: Author;
 }

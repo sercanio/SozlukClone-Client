@@ -72,6 +72,22 @@ export default class BackendService {
       const response = await this.axiosInstance.request<T>(config);
       return response.data;
     } catch (error: any) {
+      console.error('Request failed:', {
+        method: config.method,
+        url: config.url,
+        headers: config.headers,
+        data: config.data,
+        error: error.response ? {
+          status: error.response.status,
+          data: {
+            status: error.response.data?.status,
+            type: error.response.data?.type,
+            title: error.response.data?.title,
+            traceId: error.response.data?.traceId,
+            errors: error.response.data?.errors?.id.toString()
+          },
+        } : error.message,
+      });
       throw this.handleError(error);
     }
   }
@@ -81,8 +97,8 @@ export default class BackendService {
       const detail = error.response?.data?.detail || 'Something went wrong';
       const status = error.response?.data?.status || 500;
       const title = error.response?.data?.title || 'Internal Server Error';
-      const type = error.response?.data?.type || ""
-      
+      const type = error.response?.data?.type || "";
+
       return new ApiError(detail, status, title, type);
     }
     return new ApiError('Something went wrong', 500, 'Internal Server Error', "https://example.com");

@@ -19,13 +19,12 @@ type Props = {
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const session = await getServerSession(options);
   const titlesService = new TitlesService(session!);
-  params.session = session!;
 
   const { page, size } = searchParams
   const pageParam: number = page ? +page - 1 : 0;
   const sizeParam: number = size ? +size : 10;
 
-  const title = await titlesService.getBySlug<TitlesGetByIdResponse>(params.slug[0], pageParam, sizeParam);
+  const title = await titlesService.getBySlug<TitlesGetByIdResponse>(params.slug[0]);
 
   return {
     title: `${title.name}`,
@@ -33,12 +32,13 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 }
 
 export default async function Page({ params, searchParams }: Props) {
-  const { session, slug } = params;
+  const { slug } = params;
 
   const { page, size } = searchParams
   const pageParam: number = page ? +page - 1 : 0;
   const sizeParam: number = size ? +size : 10;
 
+  const session = await getServerSession(options);
   const titlesService = new TitlesService(session!);
   const entriesService = new EntriesService(session!);
 
@@ -55,7 +55,7 @@ export default async function Page({ params, searchParams }: Props) {
         <EntryPagination pages={entries.pages} title={title} page={pageParam} size={sizeParam} />
         {entries.items.length > 0 &&
             entries.items.map((entry, index) => (
-              <EntryCard key={entry.id} entry={entry} index={pageParam * sizeParam + index} session={session} singleEntry={false} />
+              <EntryCard key={entry.id} entry={entry} index={pageParam * sizeParam + index} session={session!} singleEntry={false} />
             ))}
           <EntryPagination pages={entries.pages} title={title} page={pageParam} size={sizeParam} />
         </>

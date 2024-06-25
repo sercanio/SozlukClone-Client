@@ -19,25 +19,14 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const session = await getServerSession(options);
-  params.session = session!;
 
   const globalSettingsService = new GlobalSettingsService(session!);
   const globalSettings = await globalSettingsService.getById(1);
 
-  const favicon = globalSettings.siteFavIcon || '/favicon.ico';
   return {
     title: {
       template: `%s - ${globalSettings.siteName}`,
       default: `${globalSettings.siteName} - ${globalSettings.siteDescription}`,
-    },
-    icons: {
-      icon: '/icon.png',
-      shortcut: favicon,
-      apple: '/apple-icon.png',
-      other: {
-        rel: 'apple-touch-icon-precomposed',
-        url: '/apple-touch-icon-precomposed.png',
-      },
     },
   };
 }

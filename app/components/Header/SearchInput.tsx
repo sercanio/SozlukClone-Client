@@ -15,8 +15,8 @@ import {
   AuthorsSearchByUserNameItem,
   AuthorsSearchByUserNameResponse,
 } from '@/types/DTOs/AuthorsDTOs';
-
 import styles from './header.module.css';
+
 import { IconArrowRight, IconSearch } from '@tabler/icons-react';
 
 export default function SearchButton(): JSX.Element {
@@ -152,11 +152,6 @@ export default function SearchButton(): JSX.Element {
   }
 
   function handleSearchInputChange(value: string) {
-    // console.log(value);
-
-    // if (value.startsWith('@'))
-    // search(value.slice(1), 0, 10)
-    // else
     search(value, 0, 10)
   }
 

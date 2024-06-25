@@ -21,6 +21,7 @@ export const options: NextAuthOptions = {
             password: credentials?.password,
             authenticatorCode: 'string',
           }),
+          credentials: 'include',
         });
 
         const data = await res.json();

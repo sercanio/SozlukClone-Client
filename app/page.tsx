@@ -21,7 +21,6 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const session = await getServerSession(options);
-  params.session = session!;
 
   const globalSettingsService = new GlobalSettingsService(session!);
   const globalSettings = await globalSettingsService.getById(1);
@@ -39,19 +38,20 @@ export async function generateMetadata(
 export default async function HomePage({ params, searchParams }: Props) {
   const titleSearchTerm = searchParams.baslik;
 
-  const { session } = params;
+  const session = await getServerSession(options);
   const entriesService = new EntriesService(session!);
   const titleService = new TitlesService(session!);
 
-  const title: TitlesGetByIdResponse = await titleService.getByName(titleSearchTerm as string).then((res) => {
-    return res;
-  }).catch(err => {
-    console.log(err.message)
-    return null;
-  }) as TitlesGetByIdResponse;
+  if (titleSearchTerm) {
+    const title: TitlesGetByIdResponse = await titleService.getByName(titleSearchTerm as string).then((res) => {
+      return res;
+    }).catch(err => {
+      return null;
+    }) as TitlesGetByIdResponse;
 
 
-  title && redirect(`baslik/${title.slug}`);
+    title && redirect(`baslik/${title.slug}`);
+  }
 
   const entries: EntriesGetAllResponse = await entriesService.getAllForHomePage(0, 10);
 
@@ -75,7 +75,7 @@ export default async function HomePage({ params, searchParams }: Props) {
                 key={entry.id}
                 entry={entry}
                 index={index}
-                session={session}
+                session={session!}
                 singleEntry={true}
               />
             ))}
