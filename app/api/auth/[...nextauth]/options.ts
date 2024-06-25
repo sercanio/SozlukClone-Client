@@ -11,7 +11,6 @@ export const options: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        // Step 1: Authenticate user and get access token
         const res = await fetch('http://localhost:60805/api/Auth/Login', {
           method: 'POST',
           headers: {
@@ -29,7 +28,6 @@ export const options: NextAuthOptions = {
         if (res.ok && data.accessToken) {
           const accessToken = data.accessToken.token;
 
-          // Step 2: Fetch user data using the access token
           const userRes = await fetch('http://localhost:60805/api/Users/GetFromAuth', {
             method: 'GET',
             headers: {
@@ -42,7 +40,7 @@ export const options: NextAuthOptions = {
           const user = await userRes.json();
 
           if (userRes.ok && user) {
-            const autherRes = await fetch(`http://localhost:60805/api/Authors/${user.author.id}`, {
+            const authorRes = await fetch(`http://localhost:60805/api/Authors/${user.author.id}`, {
               method: 'GET',
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -51,7 +49,8 @@ export const options: NextAuthOptions = {
               credentials: 'include',
             });
 
-            const author = await autherRes.json();
+            const author = await authorRes.json();
+
             return {
               id: user.id,
               authorId: author.id,
@@ -97,5 +96,5 @@ export const options: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET, // Ensure the secret is set here
+  secret: process.env.NEXTAUTH_SECRET,
 };

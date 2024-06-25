@@ -12,12 +12,12 @@ export function EntryCard({
   entry,
   session,
   index,
-  title,
+  singleEntry
 }: {
   entry: any;
   index: number;
   session: Session;
-  title?: any;
+  singleEntry: boolean;
 }) {
   const entriesService = new EntriesService(session!);
 
@@ -35,16 +35,18 @@ export function EntryCard({
       }
     },
   }
-  
+
   return (
-    <Box p="xl" my="xl">
+    <Box p="xl" my="none">
       <Paper w={800} shadow="none" key={index}>
         <Flex direction="column" justify="flex-start" gap="sm">
           <Flex justify="space-between" gap="sm" pr="md">
-            {entry.title ? (
-              <Text component="h2" size="xl" mb="xl" >
-                <Link href={`/baslik/${title.slug}`}>{title.name}</Link>
-              </Text>
+            {entry.title && singleEntry? (
+              <Link href={`/baslik/${entry.title.slug}`} style={{ color: "unset" }}>
+                <Text component="h1" size="xl" fw="bold">
+                  {entry.title.name}
+                </Text>
+              </Link>
             ) : (
               <Text size="xs" fw="lighter">
                 {index + 1}
@@ -53,7 +55,7 @@ export function EntryCard({
             <EntryHeader entryId={entry.id} />
           </Flex>
           <Box mb="md">
-            {parse(entriesService.formatEntryContent(entry.content), htmlParserOptions)}
+            {parse(entriesService.formatEntryContent(entry?.content), htmlParserOptions)}
           </Box>
           <EntryFooter entry={entry} />
         </Flex>

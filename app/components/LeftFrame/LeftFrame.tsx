@@ -64,13 +64,14 @@ export function LeftFrame() {
                   justify="between"
                   pl="none"
                   w={292}
+                  style={{height: 'fit-content'}}
                 >
                   {title.name}
                 </Button>
               </List.Item>
             ))}
           </List>
-          {(!isComponentLoading && page === 0) && <Button variant="transparent" onClick={() => setPage(1)}>daha fazla başlık getir...</Button>}
+          {(!isComponentLoading && page === 0 && titles?.pages! > 1) && <Button variant="transparent" onClick={() => setPage(1)}>daha fazla başlık getir...</Button>}
           {(!isComponentLoading && page !== 0) && <Pagination size="sm" total={titles?.pages as number} withControls={false} value={page + 1} onChange={(page) => setPage(page - 1)} />}
         </Flex>
       </ScrollArea>

@@ -19,7 +19,7 @@ export default class BackendService {
     };
 
     if (session?.user?.accessToken && baseConfig.headers) {
-      baseConfig.headers.Authorization = `Bearer ${session.user.accessToken}`;
+      baseConfig.headers["Authorization"] = `Bearer ${session.user.accessToken}`;
     }
 
     this.axiosInstance = axios.create(baseConfig);
@@ -82,8 +82,7 @@ export default class BackendService {
       const status = error.response?.data?.status || 500;
       const title = error.response?.data?.title || 'Internal Server Error';
       const type = error.response?.data?.type || ""
-      console.log(error);
-
+      
       return new ApiError(detail, status, title, type);
     }
     return new ApiError('Something went wrong', 500, 'Internal Server Error', "https://example.com");

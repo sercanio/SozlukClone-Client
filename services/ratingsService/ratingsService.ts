@@ -1,6 +1,7 @@
 import { Session } from 'next-auth';
 import BackendService from '@services/backendService/backendService';
 import { RatingsCreateRequest, RatingsCreateResponse, RatingsDeleteRequest, RatingsDeleteResponse } from '@/types/DTOs/RatingsDTOs';
+import { EntriesGetAllResponse } from '@/types/DTOs/EntriesDTOs';
 
 export default class RatingsService {
     private backendService: BackendService;
@@ -8,7 +9,6 @@ export default class RatingsService {
     constructor(session: Session) {
         this.backendService = new BackendService(session);
     }
-
 
     public async createLike<RatingsCreateResponse, RatingsCreateRequest>(
         data: RatingsCreateRequest
@@ -39,4 +39,5 @@ export default class RatingsService {
     public async deleteFavorite(id: string): Promise<void> {
         return this.backendService.delete(`Favorites/${id}`);
     }
+
 }

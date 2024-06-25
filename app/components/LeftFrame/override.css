@@ -2,13 +2,15 @@
     width: 100%;
     padding: 0;
 }
-
+.mantine-List-itemWrapper:hover{
+    background-color: light-dark(var(--mantine-color-cyan-0), var(--mantine-color-dark-8)) !important;
+}
 
 .mantine-List-itemLabel .mantine-Button-inner {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    line-height: unset !important; 
+    line-height: 2 !important; 
 }
 
 .mantine-List-itemLabel .mantine-Button-inner .mantine-Button-label {

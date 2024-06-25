@@ -76,7 +76,7 @@ export default async function HomePage({ params, searchParams }: Props) {
                 entry={entry}
                 index={index}
                 session={session}
-                title={entry.title}
+                singleEntry={true}
               />
             ))}
         </>

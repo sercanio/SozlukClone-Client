@@ -9,6 +9,7 @@ import { options } from '@/app/api/auth/[...nextauth]/options';
 import { TitlesGetByIdResponse } from '@/types/DTOs/TitlesDTOs';
 import EntryCard from '@/app/components/Entry/EntryCard';
 import EntryPagination from '@/app/components/Entry/EntryPagination';
+import EntriesService from '@/services/entryService/entryService';
 
 type Props = {
   params: { id: string; session: Session; slug: string; author: AuthorsGetByIdResponse };
@@ -39,7 +40,10 @@ export default async function Page({ params, searchParams }: Props) {
   const sizeParam: number = size ? +size : 10;
 
   const titlesService = new TitlesService(session!);
-  const title = await titlesService.getBySlug<TitlesGetByIdResponse>(slug[0], pageParam, sizeParam);
+  const entriesService = new EntriesService(session!);
+
+  const title = await titlesService.getBySlug<TitlesGetByIdResponse>(slug[0]);
+  const entries = await entriesService.getAllByTitleId(pageParam, sizeParam, title.id)
 
   return (
     <>
@@ -48,12 +52,12 @@ export default async function Page({ params, searchParams }: Props) {
       </Text>
       <Flex pos="relative" direction="column" justify="space-between" gap="xl">
         <>
-          <EntryPagination title={title} page={pageParam} size={sizeParam} />
-          {title.entries.length > 0 &&
-            title.entries.map((entry, index) => (
-              <EntryCard key={entry.id} entry={entry} index={pageParam * sizeParam + index} session={session} />
+        <EntryPagination pages={entries.pages} title={title} page={pageParam} size={sizeParam} />
+        {entries.items.length > 0 &&
+            entries.items.map((entry, index) => (
+              <EntryCard key={entry.id} entry={entry} index={pageParam * sizeParam + index} session={session} singleEntry={false} />
             ))}
-          <EntryPagination title={title} page={pageParam} size={sizeParam} />
+          <EntryPagination pages={entries.pages} title={title} page={pageParam} size={sizeParam} />
         </>
         <EntryInput titleId={title.id} />
       </Flex>

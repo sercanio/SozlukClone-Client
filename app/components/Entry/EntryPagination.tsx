@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Box, Pagination } from '@mantine/core'
 import { TitlesGetByIdResponse } from '@/types/DTOs/TitlesDTOs'
 
-function EntryPagination({ title, page, size }: { title: TitlesGetByIdResponse, page: number, size: number }) {
+function EntryPagination({ pages, title, page, size }: { pages: number, title: TitlesGetByIdResponse, page: number, size: number }) {
     const router = useRouter();
 
     function paginationChangeHandler(page: number) {
@@ -14,7 +14,7 @@ function EntryPagination({ title, page, size }: { title: TitlesGetByIdResponse, 
 
     return (
         <Box style={{ maxWidth: "850px" }}>
-            <Pagination pos="relative" size="xs" ml="auto" mr="xl" my="sm" p="sm" right="xl" boundaries={1} value={page + 1} total={Math.ceil(title.entryCount / 10)} onChange={paginationChangeHandler} style={{ width: "fit-content" }} />
+            <Pagination pos="relative" size="xs" ml="auto" mr="xl" my="xs" px="sm" py="xs" right="xl" boundaries={1} value={page + 1} total={pages} onChange={paginationChangeHandler} style={{ width: "fit-content" }} />
         </Box>
     )
 }

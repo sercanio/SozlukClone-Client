@@ -1,17 +1,34 @@
 import { EntryAuthorInTitle } from './AuthorsDTOs';
 import { GetAllResponse } from './BaseDTOs';
-import { Rating, RatingsCreateRequest, RatingsCreateResponse } from './RatingsDTOs';
-import { TitlesGetByIdResponse } from './TitlesDTOs';
+
+export interface Title {
+	id: number;
+	slug: string;
+	name: string;
+	isLocked: boolean;
+}
+
+export interface Author {
+	id: number;
+	userId: string;
+	userName: string;
+	profilePictureUrl?: any;
+	authorGroupId: number;
+}
 
 export interface Entry {
   id: number;
-  content: string;
-  authorId: number;
-  titleId: number;
-  title: TitlesGetByIdResponse;
-  likes: Rating[];
-  dislikes: Rating[];
-  favorites: Rating[];
+	content: string;
+	createdDate: string;
+	updatedDate?: any;
+	likesCount: number;
+	dislikesCount: number;
+	favoritesCount: number;
+	authorLike: boolean;
+	authorDislike: boolean;
+	authorFavorite: boolean;
+	title: Title;
+	author: Author;
 }
 
 export interface EntriesGetAllResponse extends GetAllResponse<Entry> {}
@@ -29,6 +46,7 @@ export interface EntryInTitle extends Entry {
   updatedDate?: any;
   author: EntryAuthorInTitle;
 }
+
 
 export interface UpdateEntryByUserRequest extends Omit<Entry, 'title' | 'authorId'> {}
 export interface UpdateEntryByUserResponse extends Omit<Entry, 'title'>{}

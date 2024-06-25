@@ -33,8 +33,8 @@ async function Page({ params }: Props) {
 
     return (
         <Flex direction="column" justify="space-between" gap="xl">
-            <EntryCard entry={entry} title={entry.title} index={0} session={session} />
-            <EntryInput titleId={entry.titleId} />
+            <EntryCard entry={entry} index={0} session={session} singleEntry={true} />
+            <EntryInput titleId={entry.title.id} />
         </Flex>
     )
 }

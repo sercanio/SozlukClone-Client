@@ -27,10 +27,12 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
   const showNotification = useNotificationStore((state) => state.showNotification);
   const { showSpinnerOverlay, hideSpinnerOverlay } = useLoadingStore();
 
-  const like = entry.likes.find(like => like.authorId === user?.authorId);
-  const dislike = entry.dislikes.find(dislike => dislike.authorId === user?.authorId);
-  const favorite = entry.favorites.find(fav => fav.authorId === user?.authorId);
+  const liked = entry.authorLike;
+  const disliked = entry.authorDislike;
+  const favorited = entry.authorFavorite;
 
+  console.log(entry);
+  
   async function handleEntryDelete() {
     showSpinnerOverlay();
     try {
@@ -49,122 +51,122 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
     }
   }
 
-  async function handleLike() {
-    showSpinnerOverlay();
-    try {
-      if (dislike) {
-        await ratingsService.deleteDislike(`${dislike.id}`);
-      }
+  // async function handleLike() {
+  //   showSpinnerOverlay();
+  //   try {
+  //     if (dislike) {
+  //       await ratingsService.deleteDislike(`${dislike.id}`);
+  //     }
 
-      if (like) {
-        await ratingsService.deleteLike(`${like.id}`);
-        showNotification({ title: 'başarılı', message: 'tanım beğenisi kaldırıldı', variant: 'success' });
-      } else {
-        const likeData: RatingsCreateRequest = {
-          entryId: entry.id,
-          authorId: user?.authorId as number,
-        };
-        await ratingsService.createLike(likeData);
-        showNotification({ title: 'başarılı', message: 'tanım beğenildi', variant: 'success' });
-      }
+  //     if (like) {
+  //       await ratingsService.deleteLike(`${like.id}`);
+  //       showNotification({ title: 'başarılı', message: 'tanım beğenisi kaldırıldı', variant: 'success' });
+  //     } else {
+  //       const likeData: RatingsCreateRequest = {
+  //         entryId: entry.id,
+  //         authorId: user?.authorId as number,
+  //       };
+  //       await ratingsService.createLike(likeData);
+  //       showNotification({ title: 'başarılı', message: 'tanım beğenildi', variant: 'success' });
+  //     }
 
-    } catch (err: any) {
-      showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
-    } finally {
-      router.refresh();
-      hideSpinnerOverlay();
-    }
-  }
+  //   } catch (err: any) {
+  //     showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
+  //   } finally {
+  //     router.refresh();
+  //     hideSpinnerOverlay();
+  //   }
+  // }
 
-  async function handleDislike() {
-    showSpinnerOverlay();
-    try {
-      if (like) {
-        await ratingsService.deleteLike(`${like.id}`);
-      }
+  // async function handleDislike() {
+  //   showSpinnerOverlay();
+  //   try {
+  //     if (like) {
+  //       await ratingsService.deleteLike(`${like.id}`);
+  //     }
 
-      if (favorite) {
-        await ratingsService.deleteFavorite(`${favorite.id}`)
-      }
+  //     if (favorite) {
+  //       await ratingsService.deleteFavorite(`${favorite.id}`)
+  //     }
 
-      if (dislike) {
-        await ratingsService.deleteDislike(`${dislike.id}`);
-        showNotification({ title: 'başarılı', message: 'tanıma eksi oyu kaldırıldı', variant: 'success' });
-      } else {
-        const dislikeData: RatingsCreateRequest = {
-          entryId: entry.id,
-          authorId: user?.authorId as number,
-        };
-        await ratingsService.createDislike(dislikeData);
-        showNotification({ title: 'başarılı', message: 'tanıma eksi oy verildi', variant: 'success' });
-      }
+  //     if (dislike) {
+  //       await ratingsService.deleteDislike(`${dislike.id}`);
+  //       showNotification({ title: 'başarılı', message: 'tanıma eksi oyu kaldırıldı', variant: 'success' });
+  //     } else {
+  //       const dislikeData: RatingsCreateRequest = {
+  //         entryId: entry.id,
+  //         authorId: user?.authorId as number,
+  //       };
+  //       await ratingsService.createDislike(dislikeData);
+  //       showNotification({ title: 'başarılı', message: 'tanıma eksi oy verildi', variant: 'success' });
+  //     }
 
-    } catch (err: any) {
-      showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
-    } finally {
-      router.refresh();
-      hideSpinnerOverlay();
-    }
-  }
+  //   } catch (err: any) {
+  //     showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
+  //   } finally {
+  //     router.refresh();
+  //     hideSpinnerOverlay();
+  //   }
+  // }
 
-  async function handleFavorite() {
-    showSpinnerOverlay();
-    try {
-      if (dislike) {
-        await ratingsService.deleteDislike(`${dislike.id}`);
-      }
+  // async function handleFavorite() {
+  //   showSpinnerOverlay();
+  //   try {
+  //     if (dislike) {
+  //       await ratingsService.deleteDislike(`${dislike.id}`);
+  //     }
 
 
-      if (favorite) {
-        await ratingsService.deleteFavorite(`${favorite.id}`);
-        showNotification({ title: 'başarılı', message: 'tanım favorilerden kalıdırıldı', variant: 'success' });
-      } else {
-        const favoriteData: RatingsCreateRequest = {
-          entryId: entry.id,
-          authorId: user?.authorId as number,
-        };
-        await ratingsService.createFavorite(favoriteData);
-        showNotification({ title: 'başarılı', message: 'tanım favorilere eklendi', variant: 'success' });
-      }
+  //     if (favorite) {
+  //       await ratingsService.deleteFavorite(`${favorite.id}`);
+  //       showNotification({ title: 'başarılı', message: 'tanım favorilerden kalıdırıldı', variant: 'success' });
+  //     } else {
+  //       const favoriteData: RatingsCreateRequest = {
+  //         entryId: entry.id,
+  //         authorId: user?.authorId as number,
+  //       };
+  //       await ratingsService.createFavorite(favoriteData);
+  //       showNotification({ title: 'başarılı', message: 'tanım favorilere eklendi', variant: 'success' });
+  //     }
 
-    } catch (err: any) {
-      showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
-    } finally {
-      router.refresh();
-      hideSpinnerOverlay();
-    }
-  }
-
+  //   } catch (err: any) {
+  //     showNotification({ title: 'başarısız', message: err.message, variant: 'error' });
+  //   } finally {
+  //     router.refresh();
+  //     hideSpinnerOverlay();
+  //   }
+  // }
+  
   return (
     <Flex direction="column" justify="flex-end" align="flex-end" gap="md">
       <Flex gap="sm" justify="space-between" w="100%">
         <Flex flex={1} gap="xl">
           <Flex gap="xs" align="center">
-            <Button variant='transparent' p="none" onClick={handleLike}>
+            <Button variant='transparent' p="none">
               {
-                like ?
+                liked ?
                   <IconSquareArrowUpFilled stroke={0.5} /> : <IconSquareArrowUp stroke={0.5} />
               }
             </Button>
-            <Text>{entry.likes.length}</Text>
+            <Text>{entry.likesCount}</Text>
           </Flex>
           <Flex gap="xs" align="center">
-            <Button variant='transparent' p="none" onClick={handleDislike}>
+            <Button variant='transparent' p="none">
               {
-                dislike ?
+                disliked ?
                   <IconSquareArrowDownFilled stroke={0.5} /> : <IconSquareArrowDown stroke={0.5} />
               }
             </Button>
-            <Text>{entry.dislikes.length}</Text>
+            <Text>{entry.dislikesCount}</Text>
           </Flex>
           <Flex gap="xs" align="center">
-            <Button variant='transparent' p="none" onClick={handleFavorite}>
+            <Button variant='transparent' p="none">
               {
-                favorite ?
+                favorited ?
                   <IconHeartFilled stroke={0.5} /> : <IconHeart stroke={0.5} />
               }
             </Button>
-            <Text>{entry.favorites.length}</Text>
+            <Text>{entry.favoritesCount}</Text>
           </Flex>
         </Flex>
         <Menu shadow="md" width={150}>
@@ -191,7 +193,7 @@ export default function EntryFooter({ entry }: { entry: EntryInTitle }) {
           <Link href={`/tanim/${entry.id}`} style={{ color: 'unset' }}>
             <Text ta="right" size="xs">
               {formatDate(entry.createdDate)}
-              {entry.updatedDate &&` - ${formatDate(entry?.updatedDate)}`}
+              {entry.updatedDate && ` - ${formatDate(entry?.updatedDate)}`}
             </Text>
           </Link>
         </Flex>

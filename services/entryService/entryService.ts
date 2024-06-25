@@ -48,6 +48,31 @@ export default class EntriesService {
     return this.backendService.get<EntriesGetAllResponse>(`Entries/GetTopLikedListByAuthorId?PageIndex=${pageIndex}&PageSize=${pageSize}&authorId=${authorId}`)
   }
 
+
+  public async getMostFavoritedEntriesByAuthorId(
+    pageIndex: number,
+    pageSize: number,
+    authorId: number,
+  ): Promise<EntriesGetAllResponse> {
+    return this.backendService.get<EntriesGetAllResponse>(`Entries/GetMostFavoritedListByAuthorId?PageIndex=${pageIndex}&PageSize=${pageSize}&authorId=${authorId}`)
+  }
+
+  public async getFavoriteEntriesOfAuthorByAuthorId(
+    pageIndex: number,
+    pageSize: number,
+    authorId: number,
+  ): Promise<EntriesGetAllResponse> {
+    return this.backendService.get<EntriesGetAllResponse>(`Entries/GetFavoritesByAuthorId?PageIndex=${pageIndex}&PageSize=${pageSize}&authorId=${authorId}`)
+  }
+
+  public async getAllByTitleId(
+    pageIndex: number,
+    pageSize: number,
+    titleId: number,
+  ): Promise<EntriesGetAllResponse>{
+    return this.backendService.get<EntriesGetAllResponse>(`Entries/GetListByTitleId?PageIndex=${pageIndex}&PageSize=${pageSize}&titleId=${titleId}`)
+  }
+
   public async getById(id: number): Promise<EntriesGetByIdResponse> {
     return this.backendService.get<EntriesGetByIdResponse>(`Entries/${id}`);
   }
