@@ -1,13 +1,13 @@
 "use client";
 
+import React, { useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { Button, Flex, Group, Popover, Text, Textarea } from '@mantine/core'
 import AuthorsService from '@/services/authorsService/authorsService';
 import useLoadingStore from '@/store/loadingStore';
 import useNotificationStore from '@/store/notificationStore';
 import { AuthorsGetByIdResponse, AuthorsUpdateRequest } from '@/types/DTOs/AuthorsDTOs';
-import { Button, Flex, Group, Popover, Text, Textarea } from '@mantine/core'
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
 
 interface Props {
     author: AuthorsGetByIdResponse
@@ -26,6 +26,7 @@ function AuthorEditBio({ author }: Props) {
     useEffect(() => {
         setAuthorBio(author.biography);
     }, [])
+
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();

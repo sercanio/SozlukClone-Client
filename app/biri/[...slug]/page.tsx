@@ -7,12 +7,11 @@ import { Metadata, ResolvingMetadata } from 'next/types';
 import { options } from '@api/auth/[...nextauth]/options';
 import AuthorsService from '@services/authorsService/authorsService';
 import { AuthorsGetByIdResponse } from '@/types/DTOs/AuthorsDTOs';
-import EntriesService from '@/services/entryService/entryService';
-import EntryCard from '@/app/components/Entry/EntryCard';
 import AuthorEditBio from '@/app/components/Author/AuthorEditBio';
 import FollowingOperation from '@/app/components/Author/FollowingOperation';
 import { Suspense } from 'react';
 import AuthorProfileEntriesList from '@/app/components/Author/AuthorProfileEntriesList';
+import Guard from '@/utils/ComponentGuard';
 
 type Props = {
   params: { id: string; session: Session; slug: string; author: AuthorsGetByIdResponse };
@@ -42,7 +41,6 @@ export default async function Page({ params }: Props) {
 
   const authorsService = new AuthorsService(session!);
   const author: AuthorsGetByIdResponse = await authorsService.getByUserName(params.slug[0]);
-  const me: AuthorsGetByIdResponse = await authorsService.getByUserName(session?.user?.name!);
 
   return (
     <Box p="xs" w={880}>
@@ -56,7 +54,11 @@ export default async function Page({ params }: Props) {
               <Link href={`/?baslik=${author.userName}`}><Text fw="bold" size="xl">{author.userName}</Text></Link>
               <Flex direction="column" align="flex-start" gap="xs">
                 <Text fw="normal">{author.biography || ""}</Text>
-                <AuthorEditBio author={author} />
+                {await Guard({
+                  session: session!,
+                  ownerId: author.id,
+                  roles: ["Developer"]
+                }) && <AuthorEditBio author={author} />}
               </Flex>
               <Flex pos="relative" gap="lg" align="center" w="100%">
                 <Text fw="normal">{author.entryCount} tanım</Text>
@@ -67,7 +69,7 @@ export default async function Page({ params }: Props) {
                   <Suspense fallback={
                     <Button variant='default' disabled>...</Button>
                   }>
-                    <FollowingOperation authorId={author.id} followings={me.followings} />
+                    {/* <FollowingOperation authorId={author.id} followings={me.followings} /> */}
                   </Suspense>
                 }
               </Flex>

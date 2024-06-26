@@ -54,9 +54,7 @@ function AuthorProfileEntriesList({ author }: Props) {
             setEntries(res);
             setActiveTab('favorites')
         })
-    }
-    console.log(entries);
-    
+    }    
 
     return (
         <div>
