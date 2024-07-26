@@ -6,6 +6,49 @@ SozlukClone is a frontend project that replicates the functionalities of the pop
 
 **This project is not completed and is currently under development.**
 
+## Screens
+
+Home Page
+
+![homepage](https://github.com/user-attachments/assets/44a1e6e7-9f63-4e0a-9e25-fce8b95b7712)
+
+Profile
+
+![profile](https://github.com/user-attachments/assets/9de1b9b8-58bd-4e4c-8353-c884452635d3)
+
+Entry Input
+
+![Ekran görüntüsü 2024-07-26 121153](https://github.com/user-attachments/assets/fa698aed-b639-45cc-8fbd-67b4c8f7c0ce)
+
+Entry Page
+
+![Ekran görüntüsü 2024-07-26 121244](https://github.com/user-attachments/assets/96e9d51d-7b6c-43d3-97c3-f20e2794f727)
+
+Admin Panel - Site Settings
+
+![globalsettings](https://github.com/user-attachments/assets/0be2ff2d-fbd6-428f-b83c-3e684e424c8c)
+
+Admin Panel - Role Management
+
+![rolemanagement](https://github.com/user-attachments/assets/53a58319-9fe8-4546-84bc-66e276478837)
+
+Admin Panel - User Management
+
+![Ekran görüntüsü 2024-07-26 120837](https://github.com/user-attachments/assets/aae0b268-7f24-45a7-bc99-165fa08883f8)
+
+
+## Features
+
+- Dark and Light themes based on system theme
+- User authentication and authorization
+- User Role Management
+- Topic browsing and searching
+- Entry posting and management
+- Voting and commenting on entries
+- User profiles and settings
+- Users can follow each other
+
+
 ## Technologies Used
 
 - **Next.js**: A React framework for production that makes it easy to build fast web applications with features like server-side rendering and static site generation.
@@ -76,16 +119,6 @@ The project is organized to follow best practices and ensure a modular architect
 │   └── DTOs
 └── utils
 ```
-
-## Features
-
-- User authentication and authorization
-- Topic browsing and searching
-- Entry posting and management
-- Voting and commenting on entries
-- User profiles and settings
-- Users can follow each other
-
 
 ## Getting Started
 
