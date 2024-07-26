@@ -1,37 +1,136 @@
-# Mantine Next.js template
+# SozlukClone Frontend
 
-This is a template for [Next.js](https://nextjs.org/) app router + [Mantine](https://mantine.dev/).
-If you want to use pages router instead, see [next-pages-template](https://github.com/mantinedev/next-pages-template).
+SozlukClone is a frontend project that replicates the functionalities of the popular Turkish social media site "Ekşi Sözlük". This project is built using modern web technologies to ensure a responsive and interactive user experience.
+
+## Disclaimer
+
+**This project is not completed and is currently under development.**
+
+## Technologies Used
+
+- **Next.js**: A React framework for production that makes it easy to build fast web applications with features like server-side rendering and static site generation.
+- **Mantine UI**: A fully-featured React component library with a focus on usability, accessibility, and developer experience.
+
+## Project Structure
+
+The project is organized to follow best practices and ensure a modular architecture:
+
+```sh
+.
+├── __tests__
+│   └── Dashboard
+├── app
+│   ├── api
+│   │   └── auth
+│   │       └── [...nextauth]
+│   ├── auth
+│   │   ├── signin
+│   │   └── signup
+│   ├── baslik
+│   │   └── [...slug]
+│   ├── biri
+│   │   └── [...slug]
+│   ├── components
+│   │   ├── Admin
+│   │   │   └── dashboard
+│   │   │       └── DashboardNavigation
+│   │   ├── Auth
+│   │   ├── Author
+│   │   ├── Button
+│   │   │   └── OTP
+│   │   ├── ColorSchemeToggle
+│   │   ├── Entry
+│   │   ├── Header
+│   │   │   └── BurgerMenu
+│   │   ├── LeftFrame
+│   │   ├── LoadingOverlay
+│   │   └── Toaster
+│   ├── tanim
+│   │   ├── [...id]
+│   │   └── guncelle
+│   │       └── [...id]
+│   └── yonetim
+│       └── panel
+├── public
+│   └── assets
+│       └── default
+│           └── images
+│               └── user
+├── services
+│   ├── apiError
+│   ├── authService
+│   ├── authorGroupOperationClaimsService
+│   ├── authorGroupsService
+│   ├── authorsService
+│   ├── backendService
+│   ├── entryService
+│   ├── globalSettingsService
+│   ├── operationClaimsService
+│   ├── ratingsService
+│   ├── relationsService
+│   ├── titlesService
+│   └── usersService
+├── store
+├── test-utils
+├── types
+│   └── DTOs
+└── utils
+```
 
 ## Features
 
-This template comes with the following features:
+- User authentication and authorization
+- Topic browsing and searching
+- Entry posting and management
+- Voting and commenting on entries
+- User profiles and settings
+- Users can follow each other
 
-- [PostCSS](https://postcss.org/) with [mantine-postcss-preset](https://mantine.dev/styles/postcss-preset)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Storybook](https://storybook.js.org/)
-- [Jest](https://jestjs.io/) setup with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro)
-- ESLint setup with [eslint-config-mantine](https://github.com/mantinedev/eslint-config-mantine)
 
-## npm scripts
+## Getting Started
 
-### Build and dev scripts
+### Prerequisites
 
-- `dev` – start dev server
-- `build` – bundle application for production
-- `analyze` – analyzes application bundle with [@next/bundle-analyzer](https://www.npmjs.com/package/@next/bundle-analyzer)
+- [Node.js](https://nodejs.org/en/download/)
 
-### Testing scripts
+### Installation
 
-- `typecheck` – checks TypeScript types
-- `lint` – runs ESLint
-- `prettier:check` – checks files with Prettier
-- `jest` – runs jest tests
-- `jest:watch` – starts jest watch
-- `test` – runs `jest`, `prettier:check`, `lint` and `typecheck` scripts
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/yourusername/SozlukClone-frontend.git
+   cd SozlukClone-frontend
+2. **Install dependencies:**
+  ```sh
+  npm install
+  ```
 
-### Other scripts
+3. **Run the development server:**
+  ```sh
+  npm run dev
+  ```
+Open http://localhost:3000 with your browser to see the result.
 
-- `storybook` – starts storybook dev server
-- `storybook:build` – build production storybook bundle to `storybook-static`
-- `prettier:write` – formats all files with Prettier
+### Building for Production
+To build the project for production, use the following command:
+
+  ```sh
+  npm run build
+  ```
+
+### Running Tests
+To run the tests, use the following command:
+
+  ```sh
+  npm test
+  ```
+
+### Contributing
+Contributions are welcome! Please open an issue or submit a pull request.
+
+### License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+sql
+Copy code
+
+Feel free to copy and paste this into your README file!
