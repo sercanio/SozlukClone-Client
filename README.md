@@ -42,6 +42,7 @@ Admin Panel - User Management
 - Dark and Light themes based on system theme
 - User authentication and authorization
 - User Role Management
+- Title and User search function
 - Topic browsing and searching
 - Entry posting and management
 - Voting and commenting on entries
